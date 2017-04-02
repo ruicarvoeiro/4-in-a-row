@@ -1,0 +1,18 @@
+Inicio- Falta fazer:
+1) Clicar uma cor e ela ficar selecionada, bloquear as outras e bloquear essa cor no adversário
+2) Clicar no jogar com o PC e ocultar o player 2
+3) Clicar no START e começar o jogo
+
+Jogo- Falta fazer:
+1) Peça da cor certa ficar colada ao rato
+2) Clicar e a peça cair no place certo
+
+1) Início do jogo (Nome dos jogadores + cor das fichas)
+2) Criação da zona de jogo
+3) Lógica de jogo (vamos demorar uma vida inteira nisto)
+4) Detalhes (importantes):
+	a) Dar mute no jogo
+	b) Animação das peças
+	c) Som antes de um dos jogadores estar prestes a fazer score
+	d) etc...
+

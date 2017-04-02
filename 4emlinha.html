@@ -1,0 +1,104 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>4 em Linha</title>
+    <link type="text/css" rel="stylesheet" media="screen" href="4emlinha.css">
+    <script src="design.js"></script>
+    <script src="4emlinha.js"></script>
+</head>
+
+<body>
+    <section id="game">
+        <br>
+        <h1 id="title">Novo jogo</h1>
+        <br>
+        <section id="inicio" class="stage visivel">
+            <div class="newPlayer">
+                <br>
+                <input type="text" id="name_player1" value="Carolina" placeholder="Nome do Player 1">
+                <label>Selecione uma cor:</label>
+                <div class="cores" id="coresp1">
+                    <div class="img"></div>
+                    <div class="img"></div>
+                    <div class="img"></div>
+                    <div class="img"></div>
+                </div>
+            </div>
+            <h3>VS</h3>
+            <div class="newPlayer escondido" id="pc">
+                <br>
+                <h2>Computador</h2>
+            </div>
+            <div class="newPlayer left" id="jogador">
+                <br>
+                <input type="text" id="name_player2" placeholder="Nome do Player 2">
+                <label>Selecione uma cor:</label>
+                <div class="cores" id="coresp2">
+                    <div class="img"></div>
+                    <div class="img"></div>
+                    <div class="img"></div>
+                    <div class="img"></div>
+                </div>
+            </div>
+
+            <div class="clear"></div>
+            <div id="divPlayPC">
+                <div class="check">
+                    <input type="checkbox" value="1" id="checkbox">
+                    <label for="checkbox"></label>
+                </div>
+                <label>Jogar com o PC</label>
+            </div>
+            <br>
+            <br>
+            <br>
+            <br>
+            <input id="start" type="button" value="START">
+        </section>
+        <div id="jogo" class="escondido">
+            <h1 id="title">4 em Linha</h1>
+            <div id="stage" class="stage">
+                <div id="frameFront"></div>
+
+                <div class="peca" id="pecaP1"></div>
+                <div class="peca" id="pecaP2"></div>
+
+                <!--
+                    <div class="peca laranja"></div>
+                    <div class="peca vermelho" style="top:0px;left:360px;"></div>
+                -->
+                <div id="frameBack"></div>
+            </div>
+            <div id="final"></div>
+            <div id="output">
+                <div class="metade tesquerda"><span><strong>Game info:</strong></span></pan>
+                </div>
+                <div class="metade tdireita">
+                    <span>
+                        <img class="icon" id="muteOpt" src="images/sound.png" alt="mute">
+                    </span>
+                </div>
+            </div>
+    </section>
+
+    <audio id="somDeFundo" loop autoplay>
+        <source src="audio/SpaceDrifter.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="peca">
+        <source src="audio/peca.mp3" type="audio/mpeg">
+	</audio>
+    <audio id="jogador1">
+        <source src="audio/Jogador1_tem_3.mp3" type="audio/mpeg">
+	</audio>
+    <audio id="jogador2">
+        <source src="audio/Jogador2_tem_3.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="ganhou">
+        <source src="audio/success.mp3" type="audio/mpeg">
+	</audio>
+    </div>
+</body>
+
+</html>

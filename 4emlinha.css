@@ -1,0 +1,296 @@
+* {
+    padding: 0px;
+    margin: 0px;
+}
+
+body {
+    background-image: url(images/background.jpg);
+}
+
+#title {
+    color: white;
+}
+
+#game {
+    width: 800px;
+    height: 650px;
+    margin: 0px auto;
+}
+
+.img {
+    width: 70px;
+    height: 70px;
+    background-image: url("images/pecas.png");
+    background-size: 350px 280px;
+    float: left;
+}
+
+.peca {
+    z-index: 15;
+    position: absolute;
+    width: 90px;
+    height: 90px;
+    background-image: url("images/pecas.png");
+    background-size: 450px 360px;
+}
+
+.img:hover {
+    cursor: pointer;
+    filter: brightness(140%);
+}
+
+.clear {
+    clear: both;
+}
+
+#divPlayPC {
+    float: right;
+    background-color: orange;
+    margin: 10px;
+}
+
+#divPlayPC label {
+    margin: 8px;
+}
+
+.left {
+    float: right!important;
+}
+
+#inicio input[type="button"] {
+    width: 180px;
+    height: 100px;
+    margin: 0px 0px 30px 0px;
+    font-size: 40px;
+    font-family: PiratesWriters;
+    color: #FFF;
+    background-color: #1D4952;
+}
+
+#inicio input[type="button"]:hover {
+    border: 1px solid #1D4952;
+    color: #1D4952;
+    background-color: #FFF;
+    cursor: pointer;
+}
+
+.cores {
+    margin: 0 auto;
+    text-align: center;
+    width: 300px;
+    height: 75px;
+}
+
+.newPlayer {
+    width: 45%;
+    float: left;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.newPlayer input[type="text"],
+h2 {
+    color: #272743;
+    font-family: PiratesWriters;
+    margin: 0 auto;
+    text-align: center;
+    display: block;
+    width: 60%;
+    height: 30px;
+    font-size: 26px;
+    padding: 10px;
+    border: none;
+    border-bottom: solid 2px #c9c9c9;
+    transition: border 0.3s;
+}
+
+h2 {
+    font-size: 30px;
+}
+
+.newPlayer input[type="text"]:focus {
+    border-bottom: solid 2px #35A3A0;
+}
+
+h3 {
+    font-family: PiratesWriters;
+    font-size: 60px;
+    width: 10%;
+    color: #1D4952;
+    float: left;
+}
+
+#inicio {
+    height: 500px !important;
+    text-align: center;
+    align-content: center;
+    background-color: #FFF !important;
+    background-image: none;
+}
+
+#inicio label {
+    font-family: PiratesWriters;
+    font-size: 30px;
+    color: #1D4952;
+}
+
+.stage {
+    position: relative;
+    width: 800px;
+    height: 650px;
+    margin: 0px;
+    background-color: white;
+    background-image: url(images/sombra.png);
+    background-position: center bottom;
+    background-repeat: no-repeat;
+    border: 10px solid #1D4952;
+    box-shadow: inset 2px 2px 2px 0px #aaaaaa, 4px 4px 4px #1E7179;
+    border-radius: 2%;
+}
+
+input[type="checkbox"] {
+    visibility: hidden;
+    width: 100%;
+    height: 100%;
+}
+
+.check {
+    margin: 8px 0px 8px 8px;
+    width: 25px;
+    height: 25px;
+    background: #ddd;
+    border-radius: 100%;
+    position: relative;
+    box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.5);
+    float: left;
+}
+
+.check label {
+    margin: 0 auto !important;
+    display: block;
+    width: 15px;
+    height: 15px;
+    border-radius: 100px;
+    transition: all .5s ease;
+    cursor: pointer;
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    background: #333;
+    box-shadow: inset 0px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.imagemEscolhida {
+    width: 70px;
+    height: 70px;
+    background-image: url("images/pecas.png");
+    background-size: 350px 280px;
+    float: left;
+    filter: brightness(130%) !important;
+    cursor: pointer;
+    border-radius: 100%;
+    border-color: black;
+    border-style: dashed;
+    border-width: 2px;
+}
+
+.naoPodeEscolher {
+    width: 70px;
+    height: 70px;
+    background-image: url("images/pecas.png");
+    background-size: 350px 280px;
+    float: left;
+    filter: grayscale(60%);
+}
+
+.naoPodeEscolher:hover {
+    cursor: not-allowed !important;
+    filter: brightness(100%) !important;
+    filter: grayscale(60%) !important;
+}
+
+.check input[type=checkbox]:checked+label {
+    background: #35A3A0;
+}
+
+#frameFront {
+    z-index: 10;
+    background-image: url(images/frente.png);
+    background-position: center;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-repeat: no-repeat;
+}
+
+.escondido {
+    display: none;
+}
+
+.visivel {
+    display: block;
+}
+
+input[type="button"] {
+    clear: both;
+}
+
+#frameBack {
+    z-index: 20;
+    background-image: url(images/tras.png);
+    background-position: center;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-repeat: no-repeat;
+}
+
+#output {
+    font-family: "tahoma" !important;
+    color: white;
+    margin-top: 5px;
+    font-size: .9em;
+}
+
+.metade {
+    display: block;
+    float: left;
+    width: 50%;
+}
+
+.tesquerda {
+    text-align: left;
+    line-height: 16px;
+    display: table-cell !important;
+    vertical-align: middle !important;
+}
+
+.tdireita {
+    text-align: right;
+    line-height: 16px;
+    display: table-cell !important;
+    vertical-align: middle !important;
+}
+
+.icon {
+    cursor: pointer;
+    padding-right: 3px;
+}
+
+@font-face {
+    font-family: PiratesWriters;
+    src: url("fonts/PiratesWriters.ttf");
+}
+
+h1 {
+    text-align: center;
+    font-family: PiratesWriters;
+    font-size: 50px;
+}
+
+p {
+    font-family: PiratesWriters;
+    font-size: 20px;
+    width: 384px;
+    padding: 10px;
+}
