@@ -11,6 +11,15 @@ body {
     color: white;
 }
 
+#frame {
+    z-index: 15;
+    width: 655px;
+    height: 563px;
+    align-self: center;
+    margin: auto;
+    display: block;
+}
+
 #game {
     width: 800px;
     height: 650px;
@@ -32,6 +41,18 @@ body {
     height: 90px;
     background-image: url("images/pecas.png");
     background-size: 450px 360px;
+}
+
+.pecaTabuleiro {
+    z-index: 15;
+    position: relative;
+    width: 90px;
+    height: 90px;
+    float: left;
+    background-image: url("images/pecas.png");
+    background-size: 450px 360px;
+    visibility: hidden;
+    margin: 0.5px;
 }
 
 .img:hover {
@@ -134,10 +155,23 @@ h3 {
     color: #1D4952;
 }
 
+
+/*novo*/
+
+.zonaJogavel {
+    z-index: 1;
+    display: block;
+    height: 90px;
+    width: 90px;
+    position: absolute;
+    top: -65px;
+}
+
 .stage {
     position: relative;
-    width: 800px;
-    height: 650px;
+    width: 700px;
+    height: 575px;
+    /*100vh*/
     margin: 0px;
     background-color: white;
     background-image: url(images/sombra.png);
@@ -276,6 +310,15 @@ input[type="button"] {
     cursor: pointer;
     padding-right: 3px;
 }
+
+
+/*#contentor {
+    width: 655px;
+    height: 563px;
+    background-color: orange;
+    position: absolute;
+    background-position: center;
+}*/
 
 @font-face {
     font-family: PiratesWriters;

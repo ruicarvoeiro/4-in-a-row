@@ -12,23 +12,21 @@ var pc;
 var jogador;
 
 var pecaPlayer1 = {
+    valor: 1,
     peca: null,
     playerName: null,
     width: 90,
     height: 90,
-    pecaRow: null,
-    pecaColumn: 0,
     rowColor: null,
     columnColor: null
 };
 
 var pecaPlayer2 = {
+    valor: 2,
     peca: null,
     playerName: null,
     width: 90,
     height: 90,
-    pecaRow: null,
-    pecaColumn: 0,
     rowColor: null,
     columnColor: null
 };
