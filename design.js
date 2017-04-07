@@ -135,7 +135,7 @@ function getPecasByPlayer() {
 function comecaJogo() {
     zonaJogo.className = "visivel";
     zonaInicioJogo.className = "escondido";
-    title.className = "escondido";
+    title.innerHTML = "4 em linha";
 
     pecaPlayer1.playerName = nomeP1.value;
     pecaPlayer2.playerName = nomeP2.value;

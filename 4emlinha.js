@@ -59,11 +59,12 @@ function initGame() {
     pecaPlayer1.peca.addEventListener("mousedown", escondePeca, false);
     pecaPlayer2.peca.addEventListener("mousedown", escondePeca, false);
 
-    window.addEventListener("onclick", mutedSound, false);
+    sounds.mute.addEventListener("click", mutedSound, false);
 
     divJogadas = document.getElementsByClassName("zonaJogavel");
     for (var i = 0; i < divJogadas.length; i++) {
         divJogadas[i].addEventListener("mouseup", zonaJogavel, false);
+        //divJogadas[i].addEventListener("hover", zonaJogavel, false);
         divJogadas[i].style.left = 33 + (i * 90) + "px";
     }
     novaDiv = document.querySelector("#contentor");
@@ -75,6 +76,12 @@ function initGame() {
     //title.innerHtml = pecaPlayer1.playerName + " VS " + pecaPlayer2.playerName;
     //Nao funciona
     gameCicle();
+}
+
+function titulo() {
+    title.innerHTML = estadoDoJogo.nextPlayer == pecaPlayer1 ?
+        "<u>" + pecaPlayer1.playerName + " </u> VS " + pecaPlayer2.playerName :
+        pecaPlayer1.playerName + " VS <u>" + pecaPlayer2.playerName + " </u> ";
 }
 
 /*function render() {
@@ -108,14 +115,16 @@ function render() {
     for (var row = 0; row < ROWS; row++) {
         for (var col = 0; col < COLUMNS; col++) {
             var cell = document.createElement("div");
-            cell.setAttribute("class", "pecaTabuleiro");
+            cell.setAttribute("class", "pecaTabuleiro oculto");
             frame.appendChild(cell);
             switch (map[row][col]) {
-                case 1:
-                    cell = pecaPlayer1.peca;
+                case pecaPlayer1.valor:
+                    cell.style.backgroundPositionY = pecaPlayer1.rowColor + "px";
+                    cell.className = "pecaTabuleiro";
                     break;
-                case 2:
-                    cell = pecaPlayer2.peca;
+                case pecaPlayer2.valor:
+                    cell.style.backgroundPositionY = pecaPlayer2.rowColor + "px";
+                    cell.className = "pecaTabuleiro";
                     break;
             }
         }
@@ -133,38 +142,58 @@ function escondePeca() {
 }
 
 function zonaJogavel(e) {
-    pecasJogadas();
-    window.removeEventListener("mousemove", gameCicle, false);
-    if (e.currentTarget.className == "zonaJogavel") {
-        intervalo = setInterval(frames, 5);
+    var y;
+    var i;
+    for (i = 0; i < divJogadas.length; i++)
+        if (e.currentTarget == divJogadas[i]) {
+            y = pecasJogadas(i);
+            break;
+        }
 
-    }
+    window.removeEventListener("mousemove", gameCicle, false);
+    estadoDoJogo.nextPlayer.peca.style.left = i * 90 + frame.style.left;
     estadoDoJogo.nextPlayer.peca.className = "peca";
+    intervalo = setInterval(frames, 5, y);
+
+    //frames(y);
+    /*changePeca();
+    estadoDoJogo.nextPlayer.peca.className = "peca";*/
 }
 
-function frames() {
-    if (posicao == 455 /*limitePecas()*/ ) {
+function frames(y) {
+    /*//var posicao = 0;
+    while (posicao < 90 * (y - 1)) {
+        var intervalo = setInterval(function() {
+            posicao++;
+            estadoDoJogo.peca.style.top = posicao + "px";
+        }, 5);
         clearInterval(intervalo);
-        window.addEventListener("mousemove", gameCicle, false);
-        pecasJogadas();
+        //);
+        //clearInterval(intervalo);
+    }
+    //window.removeEventListener("mousemove", gameCicle, false);
+    */
+    if (posicao == 90 * (y - 1)) {
         changePeca();
+        render();
+        window.addEventListener("mousemove", gameCicle, false);
+        clearInterval(intervalo);
     } else {
         posicao++;
         pecaPlayer1.peca.style.top = posicao + "px";
         pecaPlayer2.peca.style.top = posicao + "px";
     }
+
 }
 
-function pecasJogadas() {
-    switch (divJogadas) {
-        case pecaPlayer1.color:
-            map[pecaPlayer1.rowColor][pecaPlayer1.rowColor] = pecaPlayer1.state;
-            break;
-        case pecaPlayer2.color:
-            map[pecaPlayer2.rowColor][pecaPlayer2.rowColor] = pecaPlayer2.state;
-            break;
-    }
-    render();
+function pecasJogadas(x) {
+    var y = map[x].length - 1;
+    for (var i = 0; i < map[x].length; i++)
+        if (map[x][i] != 0)
+            y = i - 1;
+    map[x][y] = estadoDoJogo.nextPlayer.valor;
+    return y;
+    //render();
 }
 
 function changePeca() {
@@ -177,6 +206,7 @@ function changePeca() {
 }
 
 function gameCicle(e) {
+    titulo();
     pecaPlayer1.peca.style.backgroundPositionY = pecaPlayer1.rowColor + "px";
     pecaPlayer2.peca.style.backgroundPositionY = pecaPlayer2.rowColor + "px";
     pecaPlayer1.peca.style.cursor = 'none';
