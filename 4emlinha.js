@@ -65,8 +65,8 @@ function initGame() {
     zonaJogadas = document.getElementsByClassName("zonaJogavel");
     for (var i = 0; i < zonaJogadas.length; i++) {
         zonaJogadas[i].addEventListener("mouseup", zonaJogavel, false);
-        zonaJogadas[i].addEventListener("mouseover", glow, false);
-        zonaJogadas[i].addEventListener("mouseleave", noGlow, false);
+        //zonaJogadas[i].addEventListener("mouseover", glow, false);
+        //        zonaJogadas[i].addEventListener("mouseleave", noGlow, false);
         zonaJogadas[i].style.left = 33 + (i * 90) + "px"; //Porque 33?
     }
 
@@ -169,7 +169,7 @@ function movimentoRato(e) {
         stagePos.top - 45 +
         parseInt(window.pageYOffset);
 
-    estadoDoJogo.nextPlayer.peca.className = "peca";
+    //estadoDoJogo.nextPlayer.peca.className = "peca";
     estadoDoJogo.nextPlayer.peca.style.backgroundPositionY = estadoDoJogo.nextPlayer.rowColor + "px";
     estadoDoJogo.nextPlayer.peca.style.cursor = 'none';
 
