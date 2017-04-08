@@ -276,6 +276,10 @@ input[type="button"] {
     clear: both;
 }
 
+.podeJogar {
+    box-shadow: 0px 0px 5px #fff;
+}
+
 #frameBack {
     z-index: 20;
     background-image: url(images/tras.png);

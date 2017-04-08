@@ -65,14 +65,17 @@ function initGame() {
     zonaJogadas = document.getElementsByClassName("zonaJogavel");
     for (var i = 0; i < zonaJogadas.length; i++) {
         zonaJogadas[i].addEventListener("mouseup", zonaJogavel, false);
-        //zonaJogadas[i].addEventListener("hover", zonaJogavel, false);
+        zonaJogadas[i].addEventListener("mouseover", glow, false);
+        zonaJogadas[i].addEventListener("mouseleave", noGlow, false);
         zonaJogadas[i].style.left = 33 + (i * 90) + "px"; //Porque 33?
     }
+
+    estadoDoJogo.nextPlayer.peca.style.backgroundPositionY = estadoDoJogo.nextPlayer.rowColor + "px";
+    estadoDoJogo.nextPlayer.peca.style.cursor = 'none';
+    estadoDoJogo.nextPlayer.peca.className = "peca";
+
+    titulo();
     render();
-    /*
-        offsetX = e.clientX;
-        offsetY = e.clientY;
-        */
 }
 
 
@@ -101,54 +104,42 @@ function render() {
 
 function zonaJogavel(e) {
     var linha, coluna;
-    for (i = 0; i < zonaJogadas.length; i++)
-        if (e.currentTarget == zonaJogadas[i]) {
-            linha = pecaJogada(i);
+    for (coluna = 0; coluna < zonaJogadas.length; coluna++)
+        if (e.currentTarget == zonaJogadas[coluna]) {
+            linha = pecaJogada(coluna);
             break;
         }
 
     window.removeEventListener("mousemove", movimentoRato, false);
-    //estadoDoJogo.nextPlayer.peca.style.left = i * 90 + frame.style.left + "px";
+
+    var stagePos = stage.getBoundingClientRect();
+    //estadoDoJogo.nextPlayer.peca.style.left = coluna * 90 + stagePos.left + "px";
+
     estadoDoJogo.nextPlayer.peca.className = "peca";
     posicao = 0;
     intervalo = setInterval(frames, 5, linha);
-
-    //frames(y);
-    /*trocaPlayer();
-    estadoDoJogo.nextPlayer.peca.className = "peca";*/
 }
 
 function frames(y) {
-    /*//var posicao = 0;
-    while (posicao < 90 * (y - 1)) {
-        var intervalo = setInterval(function() {
-            posicao++;
-            estadoDoJogo.peca.style.top = posicao + "px";
-        }, 5);
+    if (posicao == 90 * (y + 1)) {
         clearInterval(intervalo);
-        //);
-        //clearInterval(intervalo);
-    }
-    //window.removeEventListener("mousemove", movimentoRato, false);
-    */
-    if (posicao == 90 * (y - 1)) {
         window.addEventListener("mousemove", movimentoRato, false);
         render();
         trocaPlayer();
-        clearInterval(intervalo);
+        estadoDoJogo.nextPlayer.peca.className = "escondido";
     } else {
         posicao++;
-        pecaPlayer1.peca.style.top = posicao + "px";
-        pecaPlayer2.peca.style.top = posicao + "px";
+        estadoDoJogo.nextPlayer.peca.style.top = posicao + "px";
     }
-
 }
 
 function pecaJogada(coluna) {
     var linha = map.length - 1;
-    for (var i = 0; i < map.length; i++)
-        if (map[i][coluna] != 0)
-            linha = i - 1;
+    for (var i = map.length - 1; i >= 0; i--)
+        if (map[i][coluna] == 0) {
+            linha = i;
+            break;
+        }
     map[linha][coluna] = estadoDoJogo.nextPlayer.valor;
     return linha;
 }
@@ -163,6 +154,7 @@ function trocaPlayer() {
 }
 
 function movimentoRato(e) {
+    e = e ? e : { clientX: 100, clientY: 100 };
     titulo();
     var stagePos = stage.getBoundingClientRect();
     var mouseX = parseInt(e.clientX) +
@@ -177,23 +169,19 @@ function movimentoRato(e) {
         stagePos.top - 45 +
         parseInt(window.pageYOffset);
 
+    estadoDoJogo.nextPlayer.peca.className = "peca";
+    estadoDoJogo.nextPlayer.peca.style.backgroundPositionY = estadoDoJogo.nextPlayer.rowColor + "px";
+    estadoDoJogo.nextPlayer.peca.style.cursor = 'none';
 
-    pecaPlayer1.peca.style.backgroundPositionY = pecaPlayer1.rowColor + "px";
-    pecaPlayer2.peca.style.backgroundPositionY = pecaPlayer2.rowColor + "px";
-    pecaPlayer1.peca.style.cursor = 'none';
-    pecaPlayer2.peca.style.cursor = 'none';
-    if (e) {
-        var stagePos = stage.getBoundingClientRect();
-        /*estadoDoJogo.nextPlayer.peca.style.top = (e.pageY - stagePos.top - 45 + window.pageYOffset) + "px";
-        estadoDoJogo.nextPlayer.peca.style.left = (e.pageX - stagePos.left - 45 + window.pageXOffset) + "px";
-        estadoDoJogo.outroPlayer.peca.style.top = (e.pageY - stagePos.top - 45 + window.pageYOffset) + "px";
-        estadoDoJogo.outroPlayer.peca.style.left = (e.pageX - stagePos.left - 45 + window.pageXOffset) + "px";*/
-        estadoDoJogo.nextPlayer.peca.style.left = mouseX + "px";
-        estadoDoJogo.nextPlayer.peca.style.top = mouseY + "px";
-    } else {
+    estadoDoJogo.nextPlayer.peca.style.left = mouseX + "px";
+    estadoDoJogo.nextPlayer.peca.style.top = mouseY + "px";
+
+
+    //if (e) {
+    /*} else {
         estadoDoJogo.nextPlayer.peca.style.top = "0px";
         estadoDoJogo.nextPlayer.peca.style.left = "200px";
-    }
+    }*/
 
 }
 
@@ -222,25 +210,10 @@ function titulo() {
         pecaPlayer1.playerName + " VS <u>" + pecaPlayer2.playerName + " </u> ";
 }
 
-/*
-// cálculo exacto das coordenadas do rato na página
-function mover(e){
-   var bordoContentor=10;
-   var mouseX= parseInt(e.clientX)+                // coordenada X do rato
-              parseInt(contentor.scrollLeft)+     // scrollX do contentor
-              parseInt(window.pageXOffset)-       // scrollX da janela
-              parseInt(contentor.offsetLeft)-     // deslocamento do contentor
-              bordoContentor;                     // bordo do Contentor
-
-  var mouseY= parseInt(e.clientY)+               // coordenada Y do rato
-              parseInt(contentot.scrollTop)-     // scrollY do contentor
-              parseInt(contentor.offsetTop)+     // deslocamento Y do contentor
-              parseInt(window.pageYOffset)-      // scrollY da janela
-              bordoContentor;                    // bordo do contentor
-
+function glow(e) {
+    estadoDoJogo.nextPlayer.peca.className = "peca podeJogar";
 }
 
-// contentor pode ser uma DIV
-// se o bordo tem 10px, tem que se somar os 10px da esquerda ou topo
-// se houver margens e paddings definidos têm que ser contabilizados também
-*/
+function noGlow(e) {
+    estadoDoJogo.nextPlayer.peca.className = "peca";
+}
