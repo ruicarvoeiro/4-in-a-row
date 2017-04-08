@@ -1,4 +1,5 @@
 window.addEventListener("DOMContentLoaded", init, false);
+var game;
 var listaDePecasPlayer1;
 var listaDePecasPlayer2;
 
@@ -41,6 +42,7 @@ var title;
 
 
 function init() {
+    game = document.getElementById("game");
     listaDePecasPlayer1 = addElementos(document.getElementById("coresp1").childNodes);
     listaDePecasPlayer2 = addElementos(document.getElementById("coresp2").childNodes);
     zonaJogo = document.getElementById("jogo");
