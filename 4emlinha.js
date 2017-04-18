@@ -16,8 +16,7 @@ var sounds = {
     peca: "",
     jogador1_fez_3: "",
     jogador2_fez_3: "",
-    ganhou: "",
-    mute: null
+    ganhou: ""
 };
 
 var map = [
@@ -87,6 +86,7 @@ function render() {
         for (var col = 0; col < COLUMNS; col++) {
             var cell = document.createElement("div");
             cell.setAttribute("class", "pecaTabuleiro oculto");
+
             frame.appendChild(cell);
             switch (map[row][col]) {
                 case pecaPlayer1.valor:
@@ -100,120 +100,188 @@ function render() {
             }
         }
     }
+
+    //existeXEmLinha();
+    existeXEmLinha();
+
 }
 
-function zonaJogavel(e) {
-    var linha, coluna;
-    for (coluna = 0; coluna < zonaJogadas.length; coluna++)
-        if (e.currentTarget == zonaJogadas[coluna]) {
-            linha = pecaJogada(coluna);
-            break;
-        }
+function existeXEmLinha() {
+    return horizontal();
 
-    window.removeEventListener("mousemove", movimentoRato, false);
-
-    var stagePos = stage.getBoundingClientRect();
-    //estadoDoJogo.nextPlayer.peca.style.left = coluna * 90 + stagePos.left + "px";
-
-    estadoDoJogo.nextPlayer.peca.className = "peca";
-    posicao = 0;
-    intervalo = setInterval(frames, 5, linha);
 }
 
-function frames(y) {
-    if (posicao == 90 * (y + 1)) {
-        clearInterval(intervalo);
-        window.addEventListener("mousemove", movimentoRato, false);
-        render();
-        trocaPlayer();
-        estadoDoJogo.nextPlayer.peca.className = "escondido";
-    } else {
-        posicao++;
-        estadoDoJogo.nextPlayer.peca.style.top = posicao + "px";
+
+var posicoes4EmLinha = [];
+
+
+function horizontal() {
+    var flag = false;
+    posicoes4EmLinha = [];
+    for (var i = ROWS - 1; i >= 0; i--) {
+        var existe3EmLinha = contagemLinha(map[i], 3);
+        var p1Fez4EmLInha = contagemLinha(map[i], pecaPlayer1, 4);
+        var p2Fez4EmLinha = contagemLinha(map[i], pecaPlayer2, 4);
+        alert(p1Fez4EmLInha);
+
     }
-}
 
-function pecaJogada(coluna) {
-    var linha = map.length - 1;
-    for (var i = map.length - 1; i >= 0; i--)
-        if (map[i][coluna] == 0) {
-            linha = i;
-            break;
+    function contagemLinha(arr, valor, player = null) {
+        var match;
+        if (player == 2 && valor == 4)
+            match = /(2,?){4,}/.exec(arr.toString())
+        else if (player == pecaPlayer1 && valor == 4)
+            match = /(1,?){4,}/.exec(arr.toString())
+        else if (valor == 3) {
+            match = /(2,?){3}/.exec(arr.toString())
+            if (match.length == 0)
+                match = /(1,?){3}/.exec(arr.toString())
         }
-    map[linha][coluna] = estadoDoJogo.nextPlayer.valor;
-    return linha;
-}
 
-function trocaPlayer() {
-    var player = estadoDoJogo.nextPlayer;
-    estadoDoJogo.nextPlayer = estadoDoJogo.outroPlayer;
-    estadoDoJogo.outroPlayer = player;
-    estadoDoJogo.nextPlayer.peca.className = "peca";
-    estadoDoJogo.outroPlayer.peca.className = "escondido";
-    titulo();
-}
+        if (match && valor == 4) {
+            var fiz4EmLinha = {
+                jogador: player,
+                linha: i,
+                coluna_inicio: match.index,
+                coluna_fim: match.index + match.length
+            };
+            return fiz4EmLinha;
+        }
+        if (match && valor == 3)
+            return true;
+        return false;
+    }
 
-function movimentoRato(e) {
-    e = e ? e : { clientX: 100, clientY: 100 };
-    titulo();
-    var stagePos = stage.getBoundingClientRect();
-    var mouseX = parseInt(e.clientX) +
-        parseInt(jogo.scrollLeft) +
-        parseInt(window.pageXOffset) -
-        parseInt(jogo.offsetLeft) - 45 +
-        stagePos.left;
+    function vertical(x) {
 
-    var mouseY = parseInt(e.clientY) +
-        parseInt(jogo.scrollTop) -
-        parseInt(jogo.offsetTop) +
-        stagePos.top - 45 +
-        parseInt(window.pageYOffset);
+    }
 
-    //estadoDoJogo.nextPlayer.peca.className = "peca";
-    estadoDoJogo.nextPlayer.peca.style.backgroundPositionY = estadoDoJogo.nextPlayer.rowColor + "px";
-    estadoDoJogo.nextPlayer.peca.style.cursor = 'none';
+    function diagonal(x) {
 
-    estadoDoJogo.nextPlayer.peca.style.left = mouseX + "px";
-    estadoDoJogo.nextPlayer.peca.style.top = mouseY + "px";
+    }
+
+    function zonaJogavel(e) {
+        var linha, coluna;
+        for (coluna = 0; coluna < zonaJogadas.length; coluna++)
+            if (e.currentTarget == zonaJogadas[coluna]) {
+                linha = pecaJogada(coluna);
+                break;
+            }
+
+        window.removeEventListener("mousemove", movimentoRato, false);
+        for (var i = 0; i < zonaJogadas.length; i++)
+            zonaJogadas[i].removeEventListener("mouseup", zonaJogavel, false);
+
+        estadoDoJogo.nextPlayer.peca.className = "peca";
+
+        var stagePos = stage.getBoundingClientRect();
+        estadoDoJogo.nextPlayer.peca.style.left = 45 + coluna * 90 + stagePos.left + "px";
+        posicao = 0;
+        intervalo = setInterval(frames, linha + 1, linha);
+    }
+
+    function frames(y) {
+        if (posicao == 90 * (y + 1)) {
+            clearInterval(intervalo);
+            window.addEventListener("mousemove", movimentoRato, false);
+            render();
+            trocaPlayer();
+            estadoDoJogo.nextPlayer.peca.className = "escondido";
+            for (var i = 0; i < zonaJogadas.length; i++)
+                zonaJogadas[i].addEventListener("mouseup", zonaJogavel, false);
+        } else {
+            posicao++;
+            estadoDoJogo.nextPlayer.peca.style.top = posicao + "px";
+        }
+    }
+
+    function pecaJogada(coluna) {
+        var linha = map.length - 1;
+        for (var i = map.length - 1; i >= 0; i--)
+            if (map[i][coluna] == 0) {
+                linha = i;
+                break;
+            }
+        map[linha][coluna] = estadoDoJogo.nextPlayer.valor;
+        return linha;
+    }
+
+    function trocaPlayer() {
+        var player = estadoDoJogo.nextPlayer;
+        estadoDoJogo.nextPlayer = estadoDoJogo.outroPlayer;
+        estadoDoJogo.outroPlayer = player;
+        estadoDoJogo.nextPlayer.peca.className = "peca";
+        estadoDoJogo.outroPlayer.peca.className = "escondido";
+        titulo();
+    }
+
+    function movimentoRato(e) {
+        e = e ? e : { clientX: 100, clientY: 100 };
+        titulo();
+        var stagePos = stage.getBoundingClientRect();
+        var mouseX = parseInt(e.clientX) +
+            parseInt(jogo.scrollLeft) +
+            parseInt(window.pageXOffset) -
+            parseInt(jogo.offsetLeft) - 45 +
+            stagePos.left;
+
+        var mouseY = parseInt(e.clientY) +
+            parseInt(jogo.scrollTop) -
+            parseInt(jogo.offsetTop) +
+            stagePos.top - 45 +
+            parseInt(window.pageYOffset);
+
+        estadoDoJogo.nextPlayer.peca.className = "peca";
+        estadoDoJogo.nextPlayer.peca.style.backgroundPositionY = estadoDoJogo.nextPlayer.rowColor + "px";
+        estadoDoJogo.nextPlayer.peca.style.cursor = 'none';
+
+        estadoDoJogo.nextPlayer.peca.style.left = mouseX + "px";
+        estadoDoJogo.nextPlayer.peca.style.top = mouseY + "px";
 
 
-    //if (e) {
-    /*} else {
-        estadoDoJogo.nextPlayer.peca.style.top = "0px";
-        estadoDoJogo.nextPlayer.peca.style.left = "200px";
-    }*/
+        //if (e) {
+        /*} else {
+            estadoDoJogo.nextPlayer.peca.style.top = "0px";
+            estadoDoJogo.nextPlayer.peca.style.left = "200px";
+        }*/
 
-}
+    }
 
-function endGame() {
-    sounds.ganhou.play();
-}
+    function endGame() {
+        sounds.ganhou.play();
+    }
 
-//----------------------------------------------------------------------------
-// descodifica os valores em PX do estilo e devolve um float  
-function getValue(cssValue) {
-    var number = cssValue.split("px")[0].trim();
-    return parseFloat(number);
-}
+    //----------------------------------------------------------------------------
+    // descodifica os valores em PX do estilo e devolve um float  
+    function getValue(cssValue) {
+        var number = cssValue.split("px")[0].trim();
+        return parseFloat(number);
+    }
 
-function mutedSound() {
-    sounds.mute.volume = 0;
-}
+    function mutedSound() {
+        if (sounds.somDeFundo.muted == false) {
+            sounds.somDeFundo.muted = true;
+            sounds.mute.src = "images/mute.png"
+        } else {
+            sounds.somDeFundo.muted = false;
+            sounds.mute.src = "images/sound.png";
+        }
+    }
 
-function escondePeca() {
-    estadoDoJogo.nextPlayer.peca.className = "escondido";
-}
+    function escondePeca() {
+        estadoDoJogo.nextPlayer.peca.className = "escondido";
+    }
 
-function titulo() {
-    title.innerHTML = estadoDoJogo.nextPlayer == pecaPlayer1 ?
-        "<u>" + pecaPlayer1.playerName + " </u> VS " + pecaPlayer2.playerName :
-        pecaPlayer1.playerName + " VS <u>" + pecaPlayer2.playerName + " </u> ";
-}
+    function titulo() {
+        title.innerHTML = estadoDoJogo.nextPlayer == pecaPlayer1 ?
+            "<u>" + pecaPlayer1.playerName + " </u> VS " + pecaPlayer2.playerName :
+            pecaPlayer1.playerName + " VS <u>" + pecaPlayer2.playerName + " </u> ";
+    }
 
-function glow(e) {
-    estadoDoJogo.nextPlayer.peca.className = "peca podeJogar";
-}
+    function glow(e) {
+        estadoDoJogo.nextPlayer.peca.className = "peca podeJogar";
+    }
 
-function noGlow(e) {
-    estadoDoJogo.nextPlayer.peca.className = "peca";
-}
+    function noGlow(e) {
+        estadoDoJogo.nextPlayer.peca.className = "peca";
+    }
