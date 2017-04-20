@@ -64,8 +64,6 @@ function initGame() {
     zonaJogadas = document.getElementsByClassName("zonaJogavel");
     for (var i = 0; i < zonaJogadas.length; i++) {
         zonaJogadas[i].addEventListener("mouseup", zonaJogavel, false);
-        //zonaJogadas[i].addEventListener("mouseover", glow, false);
-        //        zonaJogadas[i].addEventListener("mouseleave", noGlow, false);
         zonaJogadas[i].style.left = 33 + (i * 90) + "px"; //Porque 33?
     }
 
@@ -101,73 +99,194 @@ function render() {
         }
     }
 
-    //existeXEmLinha();
-    existeXEmLinha();
+    x = fizeram4EmLinha();
+    if (x) {
+        alert(x);
+        endGame();
+        //title.innerHTML = "Fim de Jogo <u>" + x.player.playerName + "</u> ganhou!";
+        window.removeEventListener("mousemove", movimentoRato, false);
+        for (var i = 0; i < zonaJogadas.length; i++)
+            zonaJogadas[i].removeEventListener("mouseup", zonaJogavel, false);
+    }
+
+    //if (x)
+    //  alert("4 em linha, by: " + x.player.playerName);
 
 }
 
-function existeXEmLinha() {
-    return horizontal();
-
+function fizeram4EmLinha() {
+    return horizontal() || vertical() || diagonal();
 }
 
-
-var posicoes4EmLinha = [];
-
+function vertical() {
+    for (var i = 0; i < ROWS - 3; i++)
+        for (var j = 0; j < COLUMNS; j++)
+            if (map[i][j] != 0 &&
+                map[i][j] == map[i + 1][j] &&
+                map[i][j] == map[i + 2][j] &&
+                map[i][j] == map[i + 3][j])
+                return map[i][j];
+    return false;
+}
 
 function horizontal() {
-    var flag = false;
-    posicoes4EmLinha = [];
+    for (var i = 0; i < ROWS; i++)
+        for (var j = 0; j < COLUMNS - 3; j++)
+            if (map[i][j] != 0 &&
+                map[i][j] == map[i][j + 1] &&
+                map[i][j] == map[i][j + 2] &&
+                map[i][j] == map[i][j + 3])
+                return map[i][j];
+    return false;
+}
+
+function diagonal() {
+    for (var i = 3; i < ROWS; i++)
+        for (var j = 0; j < COLUMNS - 3; j++)
+            if (map[i][j] != 0 &&
+                map[i][j] == map[i - 1][j + 1] &&
+                map[i][j] == map[i - 2][j + 2] &&
+                map[i][j] == map[i - 3][j + 3])
+                return map[i][j];
+
+    for (var i = 0; i < ROWS - 3; i++)
+        for (var j = 0; j < COLUMNS - 3; j++)
+            if (map[i][j] != 0 &&
+                map[i][j] == map[i + 1][j + 1] &&
+                map[i][j] == map[i + 2][j + 2] &&
+                map[i][j] == map[i + 3][j + 3])
+                return map[i][j];
+
+
+    for (var i = 0; i < COLUMNS - 3; i++) {
+        for (var j = 0; j < ROWS - 3; j++)
+            if (map[j][i] != 0 &&
+                map[j][i] == map[j + 1][i + 1] &&
+                map[j][i] == map[j + 2][i + 2] &&
+                map[j][i] == map[j + 3][i + 3])
+                return map[j][i];
+
+        for (var k = 3; k < ROWS; k++)
+            if (map[k][i] != 0 &&
+                map[k][i] == map[k - 1][i + 1] &&
+                map[k][i] == map[k - 2][i + 2] &&
+                map[k][i] == map[k - 3][i + 3])
+                return map[k][i]
+    }
+    return false;
+}
+
+
+//var posicoes4EmLinha = [];
+
+/*function horizontal() {
     for (var i = ROWS - 1; i >= 0; i--) {
-        var existe3EmLinha = contagemLinha(map[i], 3);
-        var p1Fez4EmLInha = contagemLinha(map[i], pecaPlayer1, 4);
-        var p2Fez4EmLinha = contagemLinha(map[i], pecaPlayer2, 4);
-        alert(p1Fez4EmLInha);
-
-    }
-
-    function contagemLinha(arr, valor, player = null) {
-        var match;
-        if (player == 2 && valor == 4)
-            match = /(2,?){4,}/.exec(arr.toString())
-        else if (player == pecaPlayer1 && valor == 4)
-            match = /(1,?){4,}/.exec(arr.toString())
-        else if (valor == 3) {
-            match = /(2,?){3}/.exec(arr.toString())
-            if (match.length == 0)
-                match = /(1,?){3}/.exec(arr.toString())
+        //var existe3EmLinha = contagemLinha(map[i], 3);
+        var p1Fez4EmLinha = contagemLinha(map[i], 4, pecaPlayer1);
+        var p2Fez4EmLinha = contagemLinha(map[i], 4, pecaPlayer2);
+        if (p1Fez4EmLinha) {
+            p1Fez4EmLinha.linha_inicio = i;
+            p1Fez4EmLinha.linha_fim = i;
+            return p1Fez4EmLinha
+        } else if (p2Fez4EmLinha) {
+            p2Fez4EmLinha.linha_inicio = i;
+            p2Fez4EmLinha.linha_fim = i;
+            return p2Fez4EmLinha
+                //} else if (existe3EmLinha)
+                    //return existe3EmLinha;
         }
+    }
+}
 
-        if (match && valor == 4) {
-            var fiz4EmLinha = {
-                jogador: player,
-                linha: i,
-                coluna_inicio: match.index,
-                coluna_fim: match.index + match.length
-            };
-            return fiz4EmLinha;
+function vertical() {
+    for (var j = 0; j < COLUMNS; j++) {
+        var arr = [];
+        for (var i = ROWS - 1; i >= 0; i--)
+            arr += map[i][j];
+        var existe3EmLinha = contagemLinha(arr, 3);
+        var p1Fez4EmLinha = contagemLinha(arr, 4, pecaPlayer1);
+        var p2Fez4EmLinha = contagemLinha(arr, 4, pecaPlayer2);
+        if (p1Fez4EmLinha) {
+            p1Fez4EmLinha.linha_inicio = p1Fez4EmLinha.coluna_inicio;
+            p1Fez4EmLinha.linha_fim = p1Fez4EmLinha.coluna_fim;
+            p1Fez4EmLinha.coluna_inicio = j;
+            p1Fez4EmLinha.coluna_fim = j;
+            return p1Fez4EmLinha;
+        } else if (p2Fez4EmLinha) {
+            p2Fez4EmLinha.linha_inicio = p2Fez4EmLinha.coluna_inicio;
+            p2Fez4EmLinha.linha_fim = p2Fez4EmLinha.coluna_fim;
+            p2Fez4EmLinha.coluna_inicio = j;
+            p2Fez4EmLinha.coluna_fim = j;
+            return p2Fez4EmLinha;
         }
-        if (match && valor == 3)
-            return true;
-        return false;
+        //else if (existe3EmLinha)
+                        //return existe3EmLinha;
+}
+}
+
+function diagonal() {
+    for (var j = 0; j < COLUMNS && j < ROWS; j++) {
+        var arr = [];
+        for (var i = ROWS - 1; i >= 0; i--)
+            arr += map[i][j];
+        var existe3EmLinha = contagemLinha(arr, 3);
+        var p1Fez4EmLinha = contagemLinha(arr, 4, pecaPlayer1);
+        var p2Fez4EmLinha = contagemLinha(arr, 4, pecaPlayer2);
+        if (p1Fez4EmLinha) {
+            p1Fez4EmLinha.linha_inicio = p1Fez4EmLinha.coluna_inicio;
+            p1Fez4EmLinha.linha_fim = p1Fez4EmLinha.coluna_fim;
+            p1Fez4EmLinha.coluna_inicio = j;
+            p1Fez4EmLinha.coluna_fim = j;
+            return p1Fez4EmLinha;
+        } else if (p2Fez4EmLinha) {
+            p2Fez4EmLinha.linha_inicio = p2Fez4EmLinha.coluna_inicio;
+            p2Fez4EmLinha.linha_fim = p2Fez4EmLinha.coluna_fim;
+            p2Fez4EmLinha.coluna_inicio = j;
+            p2Fez4EmLinha.coluna_fim = j;
+            return p2Fez4EmLinha;
+        }
+        //else if (existe3EmLinha)
+                        //return existe3EmLinha;
+    }
+}
+
+function contagemLinha(arr, valor, player) {
+    player = player ? player : null;
+    var match;
+    if (pecaPlayer2 == player && valor == 4)
+        match = /(2,?){4,}/.exec(arr.toString())
+    else if (player == pecaPlayer1 && valor == 4)
+        match = /(1,?){4,}/.exec(arr.toString())
+    else if (valor == 3) {
+        match = /(2,?){3}/.exec(arr.toString())
+        if (!match)
+            match = /(1,?){3}/.exec(arr.toString())
     }
 
-    function vertical(x) {
-
+    if (match && valor == 4) {
+        var fiz4EmLinha = {
+            player: player,
+            linha_inicio: 0,
+            coluna_inicio: match.index,
+            linha_fim: 0,
+            coluna_fim: match.index + match[0].replace(/,/g, "").length - 1
+        };
+        return fiz4EmLinha;
     }
+    if (match && valor == 3)
+        return true;
+    return false;
+}
+*/
 
-    function diagonal(x) {
-
-    }
-
-    function zonaJogavel(e) {
-        var linha, coluna;
-        for (coluna = 0; coluna < zonaJogadas.length; coluna++)
-            if (e.currentTarget == zonaJogadas[coluna]) {
-                linha = pecaJogada(coluna);
-                break;
-            }
-
+function zonaJogavel(e) {
+    var linha, coluna;
+    for (coluna = 0; coluna < zonaJogadas.length; coluna++)
+        if (e.currentTarget == zonaJogadas[coluna]) {
+            linha = pecaJogada(coluna);
+            break;
+        }
+    if (!(linha == null)) {
         window.removeEventListener("mousemove", movimentoRato, false);
         for (var i = 0; i < zonaJogadas.length; i++)
             zonaJogadas[i].removeEventListener("mouseup", zonaJogavel, false);
@@ -179,109 +298,95 @@ function horizontal() {
         posicao = 0;
         intervalo = setInterval(frames, linha + 1, linha);
     }
+}
 
-    function frames(y) {
-        if (posicao == 90 * (y + 1)) {
-            clearInterval(intervalo);
-            window.addEventListener("mousemove", movimentoRato, false);
-            render();
-            trocaPlayer();
-            estadoDoJogo.nextPlayer.peca.className = "escondido";
-            for (var i = 0; i < zonaJogadas.length; i++)
-                zonaJogadas[i].addEventListener("mouseup", zonaJogavel, false);
-        } else {
-            posicao++;
-            estadoDoJogo.nextPlayer.peca.style.top = posicao + "px";
-        }
-    }
-
-    function pecaJogada(coluna) {
-        var linha = map.length - 1;
-        for (var i = map.length - 1; i >= 0; i--)
-            if (map[i][coluna] == 0) {
-                linha = i;
-                break;
-            }
-        map[linha][coluna] = estadoDoJogo.nextPlayer.valor;
-        return linha;
-    }
-
-    function trocaPlayer() {
-        var player = estadoDoJogo.nextPlayer;
-        estadoDoJogo.nextPlayer = estadoDoJogo.outroPlayer;
-        estadoDoJogo.outroPlayer = player;
-        estadoDoJogo.nextPlayer.peca.className = "peca";
-        estadoDoJogo.outroPlayer.peca.className = "escondido";
-        titulo();
-    }
-
-    function movimentoRato(e) {
-        e = e ? e : { clientX: 100, clientY: 100 };
-        titulo();
-        var stagePos = stage.getBoundingClientRect();
-        var mouseX = parseInt(e.clientX) +
-            parseInt(jogo.scrollLeft) +
-            parseInt(window.pageXOffset) -
-            parseInt(jogo.offsetLeft) - 45 +
-            stagePos.left;
-
-        var mouseY = parseInt(e.clientY) +
-            parseInt(jogo.scrollTop) -
-            parseInt(jogo.offsetTop) +
-            stagePos.top - 45 +
-            parseInt(window.pageYOffset);
-
-        estadoDoJogo.nextPlayer.peca.className = "peca";
-        estadoDoJogo.nextPlayer.peca.style.backgroundPositionY = estadoDoJogo.nextPlayer.rowColor + "px";
-        estadoDoJogo.nextPlayer.peca.style.cursor = 'none';
-
-        estadoDoJogo.nextPlayer.peca.style.left = mouseX + "px";
-        estadoDoJogo.nextPlayer.peca.style.top = mouseY + "px";
-
-
-        //if (e) {
-        /*} else {
-            estadoDoJogo.nextPlayer.peca.style.top = "0px";
-            estadoDoJogo.nextPlayer.peca.style.left = "200px";
-        }*/
-
-    }
-
-    function endGame() {
-        sounds.ganhou.play();
-    }
-
-    //----------------------------------------------------------------------------
-    // descodifica os valores em PX do estilo e devolve um float  
-    function getValue(cssValue) {
-        var number = cssValue.split("px")[0].trim();
-        return parseFloat(number);
-    }
-
-    function mutedSound() {
-        if (sounds.somDeFundo.muted == false) {
-            sounds.somDeFundo.muted = true;
-            sounds.mute.src = "images/mute.png"
-        } else {
-            sounds.somDeFundo.muted = false;
-            sounds.mute.src = "images/sound.png";
-        }
-    }
-
-    function escondePeca() {
+function frames(y) {
+    if (posicao == 90 * (y + 1)) {
+        clearInterval(intervalo);
+        window.addEventListener("mousemove", movimentoRato, false);
+        trocaPlayer();
         estadoDoJogo.nextPlayer.peca.className = "escondido";
+        for (var i = 0; i < zonaJogadas.length; i++)
+            zonaJogadas[i].addEventListener("mouseup", zonaJogavel, false);
+        render();
+    } else {
+        posicao++;
+        estadoDoJogo.nextPlayer.peca.style.top = posicao + "px";
     }
+}
 
-    function titulo() {
-        title.innerHTML = estadoDoJogo.nextPlayer == pecaPlayer1 ?
-            "<u>" + pecaPlayer1.playerName + " </u> VS " + pecaPlayer2.playerName :
-            pecaPlayer1.playerName + " VS <u>" + pecaPlayer2.playerName + " </u> ";
-    }
+function pecaJogada(coluna) {
+    for (var i = map.length - 1; i >= 0; i--)
+        if (map[i][coluna] == 0) {
+            var linha = i;
+            map[linha][coluna] = estadoDoJogo.nextPlayer.valor;
+            return linha
+        }
 
-    function glow(e) {
-        estadoDoJogo.nextPlayer.peca.className = "peca podeJogar";
-    }
+    alert("Coluna cheia!");
+    return null;
+}
 
-    function noGlow(e) {
-        estadoDoJogo.nextPlayer.peca.className = "peca";
+function trocaPlayer() {
+    var player = estadoDoJogo.nextPlayer;
+    estadoDoJogo.nextPlayer = estadoDoJogo.outroPlayer;
+    estadoDoJogo.outroPlayer = player;
+    estadoDoJogo.nextPlayer.peca.className = "peca";
+    estadoDoJogo.outroPlayer.peca.className = "escondido";
+    titulo();
+}
+
+function movimentoRato(e) {
+    e = e ? e : { clientX: 100, clientY: 100 };
+    titulo();
+    var stagePos = stage.getBoundingClientRect();
+    var mouseX = parseInt(e.clientX) +
+        parseInt(jogo.scrollLeft) +
+        parseInt(window.pageXOffset) -
+        parseInt(jogo.offsetLeft) - 45 +
+        stagePos.left;
+
+    var mouseY = parseInt(e.clientY) +
+        parseInt(jogo.scrollTop) -
+        parseInt(jogo.offsetTop) +
+        stagePos.top - 45 +
+        parseInt(window.pageYOffset);
+
+    estadoDoJogo.nextPlayer.peca.className = "peca";
+    estadoDoJogo.nextPlayer.peca.style.backgroundPositionY = estadoDoJogo.nextPlayer.rowColor + "px";
+    estadoDoJogo.nextPlayer.peca.style.cursor = 'none';
+
+    estadoDoJogo.nextPlayer.peca.style.left = mouseX + "px";
+    estadoDoJogo.nextPlayer.peca.style.top = mouseY + "px";
+}
+
+function endGame() {
+    sounds.ganhou.play();
+}
+
+//----------------------------------------------------------------------------
+// descodifica os valores em PX do estilo e devolve um float  
+function getValue(cssValue) {
+    var number = cssValue.split("px")[0].trim();
+    return parseFloat(number);
+}
+
+function mutedSound() {
+    if (sounds.somDeFundo.muted == false) {
+        sounds.somDeFundo.muted = true;
+        sounds.mute.src = "images/mute.png"
+    } else {
+        sounds.somDeFundo.muted = false;
+        sounds.mute.src = "images/sound.png";
     }
+}
+
+function escondePeca() {
+    estadoDoJogo.nextPlayer.peca.className = "escondido";
+}
+
+function titulo() {
+    title.innerHTML = estadoDoJogo.nextPlayer == pecaPlayer1 ?
+        "<u>" + pecaPlayer1.playerName + "</u> VS " + pecaPlayer2.playerName :
+        pecaPlayer1.playerName + " VS <u>" + pecaPlayer2.playerName + "</u> ";
+}
