@@ -26,7 +26,7 @@ var map = [
     [0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0],
-    [1, 1, 0, 1, 1, 0, 0],
+    [0, 1, 1, 0, 0, 0, 0],
 ];
 // informacao da peca de cada jogador
 
@@ -104,14 +104,22 @@ function render() {
         }
     }
 
-    if (!(fizeram4EmLinha(map) === false)) {
+    if (fizeram4EmLinha(map)) {
+        intervalo = setInterval(endGame, 5);
         alert("4 em linha");
         endGame();
         //title.innerHTML = "Fim de Jogo <u>" + x.player.playerName + "</u> ganhou!";
         window.removeEventListener("mousemove", movimentoRato, false);
         for (var i = 0; i < zonaJogadas.length; i++)
             zonaJogadas[i].removeEventListener("mouseup", zonaJogavel, false);
-    } else if (!(fizeram3EmLinha(map) === false)) {
+    } else if (fizeram3EmLinha(map)) {
+        if (estadoDoJogo.nextPlayer == pecaPlayer1) {
+            alert("P1 do 3");
+            sounds.play.jogador1_fez_3.play();
+        } else {
+            alert("P2 do 3");
+            sounds.play.jogador2_fez_3.play();
+        }
         alert("3 em linha!");
     }
 
@@ -132,7 +140,8 @@ function vertical4EmLinha(map) {
                 map[i][j] == map[i + 1][j] &&
                 map[i][j] == map[i + 2][j] &&
                 map[i][j] == map[i + 3][j])
-                return map[i][j];
+            //return map[i][j];
+                return true;
     return false;
 }
 
@@ -143,7 +152,8 @@ function horizontal4EmLinha(map) {
                 map[i][j] == map[i][j + 1] &&
                 map[i][j] == map[i][j + 2] &&
                 map[i][j] == map[i][j + 3])
-                return map[i][j];
+            //return map[i][j];
+                return true;
     return false;
 }
 
@@ -154,7 +164,8 @@ function diagonal4EmLinha(map) {
                 map[i][j] == map[i - 1][j + 1] &&
                 map[i][j] == map[i - 2][j + 2] &&
                 map[i][j] == map[i - 3][j + 3])
-                return map[i][j];
+            //return map[i][j];
+                return true;
 
     for (var i = 0; i < ROWS - 3; i++)
         for (var j = 0; j < COLUMNS - 3; j++)
@@ -162,7 +173,8 @@ function diagonal4EmLinha(map) {
                 map[i][j] == map[i + 1][j + 1] &&
                 map[i][j] == map[i + 2][j + 2] &&
                 map[i][j] == map[i + 3][j + 3])
-                return map[i][j];
+            //return map[i][j];
+                return true;
 
 
     for (var i = 0; i < COLUMNS - 3; i++) {
@@ -195,7 +207,8 @@ function vertical3EmLinha(map) {
                     map[i][j] == map[i + 1][j] &&
                     map[i][j] == map[i + 2][j] &&
                     map[i + 3][j] == 0))
-                return map[i][j];
+            //return map[i][j];
+                return true;
     return false;
 }
 
@@ -211,7 +224,8 @@ function horizontal3EmLinha(map) {
                     map[i][j] == map[i][j + 1] &&
                     map[i][j] == map[i][j + 2] &&
                     map[i][j + 3] == 0))
-                return map[i][j];
+            //return map[i][j];
+                return true;
     return false;
 }
 
@@ -227,7 +241,8 @@ function diagonal3EmLinha(map) {
                     map[i][j] == map[i - 1][j + 1] &&
                     map[i][j] == map[i - 2][j + 2] &&
                     map[i - 3][j + 3] == 0))
-                return map[i][j];
+            //return map[i][j];
+                return true;
 
     for (var i = 0; i < ROWS - 3; i++)
         for (var j = 0; j < COLUMNS - 3; j++)
@@ -240,7 +255,8 @@ function diagonal3EmLinha(map) {
                     map[i][j] == map[i + 1][j + 1] &&
                     map[i][j] == map[i + 2][j + 2] &&
                     map[i + 3][j + 3] == 0))
-                return map[i][j];
+            //return map[i][j];
+                return true;
 
     for (var i = 0; i < ROWS - 3; i++) {
         for (var j = 0; j < COLUMNS - 3; j++)
@@ -253,7 +269,8 @@ function diagonal3EmLinha(map) {
                     map[i][j] == map[i + 1][j + 1] &&
                     map[i][j] == map[i + 2][j + 2] &&
                     map[i + 3][j + 3] == 0))
-                return map[i][j];
+            //return map[i][j];
+                return true;
 
         for (var k = 3; k < ROWS; k++) {
             if ((map[k][i] == 0 &&
