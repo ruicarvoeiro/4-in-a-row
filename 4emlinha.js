@@ -1,3 +1,4 @@
+var jogoComPC;
 var stage; // stage do jogo
 var output; // mensagens de informacao
 
@@ -25,7 +26,7 @@ var map = [
     [0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0],
+    [1, 1, 0, 1, 1, 0, 0],
 ];
 // informacao da peca de cada jogador
 
@@ -41,6 +42,7 @@ var intervalo; //timer para as animações
 var posicao = 0; //posicao da peca durante as animacoes
 
 function initGame() {
+    jogoComPC = jogarComPC.checked;
     estadoDoJogo.nextPlayer.peca.className = "peca";
     estadoDoJogo.outroPlayer.peca.className = "escondido";
 
@@ -57,7 +59,9 @@ function initGame() {
 
     window.addEventListener("mousemove", movimentoRato, false);
     pecaPlayer1.peca.addEventListener("mousedown", escondePeca, false);
-    pecaPlayer2.peca.addEventListener("mousedown", escondePeca, false);
+
+    if (!jogoComPC)
+        pecaPlayer2.peca.addEventListener("mousedown", escondePeca, false);
 
     sounds.mute.addEventListener("click", mutedSound, false);
 
@@ -70,7 +74,8 @@ function initGame() {
     estadoDoJogo.nextPlayer.peca.style.backgroundPositionY = estadoDoJogo.nextPlayer.rowColor + "px";
     estadoDoJogo.nextPlayer.peca.style.cursor = 'none';
     estadoDoJogo.nextPlayer.peca.className = "peca";
-
+    if (jogoComPC)
+        startAi();
     titulo();
     render();
 }
@@ -99,26 +104,28 @@ function render() {
         }
     }
 
-    x = fizeram4EmLinha();
-    if (x) {
-        alert(x);
+    if (!(fizeram4EmLinha(map) === false)) {
+        alert("4 em linha");
         endGame();
         //title.innerHTML = "Fim de Jogo <u>" + x.player.playerName + "</u> ganhou!";
         window.removeEventListener("mousemove", movimentoRato, false);
         for (var i = 0; i < zonaJogadas.length; i++)
             zonaJogadas[i].removeEventListener("mouseup", zonaJogavel, false);
+    } else if (!(fizeram3EmLinha(map) === false)) {
+        alert("3 em linha!");
     }
 
-    //if (x)
-    //  alert("4 em linha, by: " + x.player.playerName);
-
 }
 
-function fizeram4EmLinha() {
-    return horizontal() || vertical() || diagonal();
+function fizeram4EmLinha(map) {
+    return horizontal4EmLinha(map) || vertical4EmLinha(map) || diagonal4EmLinha(map);
 }
 
-function vertical() {
+function fizeram3EmLinha(map) {
+    return horizontal3EmLinha(map) || vertical3EmLinha(map) || diagonal3EmLinha(map);
+}
+
+function vertical4EmLinha(map) {
     for (var i = 0; i < ROWS - 3; i++)
         for (var j = 0; j < COLUMNS; j++)
             if (map[i][j] != 0 &&
@@ -129,7 +136,7 @@ function vertical() {
     return false;
 }
 
-function horizontal() {
+function horizontal4EmLinha(map) {
     for (var i = 0; i < ROWS; i++)
         for (var j = 0; j < COLUMNS - 3; j++)
             if (map[i][j] != 0 &&
@@ -140,7 +147,7 @@ function horizontal() {
     return false;
 }
 
-function diagonal() {
+function diagonal4EmLinha(map) {
     for (var i = 3; i < ROWS; i++)
         for (var j = 0; j < COLUMNS - 3; j++)
             if (map[i][j] != 0 &&
@@ -172,6 +179,100 @@ function diagonal() {
                 map[k][i] == map[k - 2][i + 2] &&
                 map[k][i] == map[k - 3][i + 3])
                 return map[k][i]
+    }
+    return false;
+}
+
+function vertical3EmLinha(map) {
+    for (var i = 0; i < ROWS - 3; i++)
+        for (var j = 0; j < COLUMNS; j++)
+            if ((map[i][j] == 0 &&
+                    map[i + 1][j] != 0 &&
+                    map[i + 1][j] == map[i + 2][j] &&
+                    map[i + 1][j] == map[i + 3][j]) ||
+
+                (map[i][j] != 0 &&
+                    map[i][j] == map[i + 1][j] &&
+                    map[i][j] == map[i + 2][j] &&
+                    map[i + 3][j] == 0))
+                return map[i][j];
+    return false;
+}
+
+function horizontal3EmLinha(map) {
+    for (var i = 0; i < ROWS; i++)
+        for (var j = 0; j < COLUMNS - 3; j++)
+            if ((map[i][j] == 0 &&
+                    map[i][j + 1] != 0 &&
+                    map[i][j + 1] == map[i][j + 2] &&
+                    map[i][j + 1] == map[i][j + 3]) ||
+
+                (map[i][j] != 0 &&
+                    map[i][j] == map[i][j + 1] &&
+                    map[i][j] == map[i][j + 2] &&
+                    map[i][j + 3] == 0))
+                return map[i][j];
+    return false;
+}
+
+function diagonal3EmLinha(map) {
+    for (var i = 3; i < ROWS; i++)
+        for (var j = 0; j < COLUMNS - 3; j++)
+            if ((map[i][j] == 0 &&
+                    map[i - 1][j + 1] != 0 &&
+                    map[i - 1][j + 1] == map[i - 2][j + 2] &&
+                    map[i - 1][j + 1] == map[i - 3][j + 3]) ||
+
+                (map[i][j] != 0 &&
+                    map[i][j] == map[i - 1][j + 1] &&
+                    map[i][j] == map[i - 2][j + 2] &&
+                    map[i - 3][j + 3] == 0))
+                return map[i][j];
+
+    for (var i = 0; i < ROWS - 3; i++)
+        for (var j = 0; j < COLUMNS - 3; j++)
+            if ((map[i][j] == 0 &&
+                    map[i + 1][j + 1] != 0 &&
+                    map[i + 1][j + 1] == map[i + 2][j + 2] &&
+                    map[i + 1][j + 1] == map[i + 3][j + 3]) ||
+
+                (map[i][j] != 0 &&
+                    map[i][j] == map[i + 1][j + 1] &&
+                    map[i][j] == map[i + 2][j + 2] &&
+                    map[i + 3][j + 3] == 0))
+                return map[i][j];
+
+    for (var i = 0; i < ROWS - 3; i++) {
+        for (var j = 0; j < COLUMNS - 3; j++)
+            if ((map[i][j] == 0 &&
+                    map[i + 1][j + 1] != 0 &&
+                    map[i + 1][j + 1] == map[i + 2][j + 2] &&
+                    map[i + 1][j + 1] == map[i + 3][j + 3]) ||
+
+                (map[i][j] != 0 &&
+                    map[i][j] == map[i + 1][j + 1] &&
+                    map[i][j] == map[i + 2][j + 2] &&
+                    map[i + 3][j + 3] == 0))
+                return map[i][j];
+
+        for (var k = 3; k < ROWS; k++) {
+            if ((map[k][i] == 0 &&
+                    map[k - 1][i + 1] != 0 &&
+                    map[k - 1][i + 1] == map[k - 2][i + 2] &&
+                    map[k - 1][i + 1] == map[k - 3][i + 3]) ||
+
+                (map[k][i] != 0 &&
+                    map[k][i] == map[k - 1][i + 1] &&
+                    map[k][i] == map[k - 2][i + 2] &&
+                    map[k - 3][i + 3] == 0))
+                return map[k][i];
+
+            if (map[k][i] != 0 &&
+                map[k][i] == map[k - 1][i + 1] &&
+                map[k][i] == map[k - 2][i + 2] &&
+                map[k][i] == map[k - 3][i + 3])
+                return map[k][i]
+        }
     }
     return false;
 }
@@ -308,6 +409,7 @@ function frames(y) {
         estadoDoJogo.nextPlayer.peca.className = "escondido";
         for (var i = 0; i < zonaJogadas.length; i++)
             zonaJogadas[i].addEventListener("mouseup", zonaJogavel, false);
+        sounds.peca.play();
         render();
     } else {
         posicao++;
@@ -328,12 +430,17 @@ function pecaJogada(coluna) {
 }
 
 function trocaPlayer() {
-    var player = estadoDoJogo.nextPlayer;
-    estadoDoJogo.nextPlayer = estadoDoJogo.outroPlayer;
-    estadoDoJogo.outroPlayer = player;
-    estadoDoJogo.nextPlayer.peca.className = "peca";
-    estadoDoJogo.outroPlayer.peca.className = "escondido";
-    titulo();
+    if (jogoComPC)
+        jogaPC();
+    else {
+
+        var player = estadoDoJogo.nextPlayer;
+        estadoDoJogo.nextPlayer = estadoDoJogo.outroPlayer;
+        estadoDoJogo.outroPlayer = player;
+        estadoDoJogo.nextPlayer.peca.className = "peca";
+        estadoDoJogo.outroPlayer.peca.className = "escondido";
+        titulo();
+    }
 }
 
 function movimentoRato(e) {
@@ -361,7 +468,9 @@ function movimentoRato(e) {
 }
 
 function endGame() {
+    sounds.somDeFundo.muted = true;
     sounds.ganhou.play();
+
 }
 
 //----------------------------------------------------------------------------

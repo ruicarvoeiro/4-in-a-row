@@ -124,7 +124,6 @@ function jogoComPC() {
     }
 }
 
-
 function getPecasByPlayer() {
     for (var i = 0; i < listaDePecasPlayer1.length; i++) {
         if (listaDePecasPlayer1[i].className == "imagemEscolhida")
