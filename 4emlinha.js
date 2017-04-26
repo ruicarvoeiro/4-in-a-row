@@ -2,6 +2,12 @@ var jogoComPC;
 var stage; // stage do jogo
 var output; // mensagens de informacao
 
+var info4EmLinha = {
+    player: null,
+    pecas: []
+};
+var player3EmLinha;
+
 var estadoDoJogo = {
     emCurso: true,
     tempoDeJogo: 0,
@@ -26,7 +32,7 @@ var map = [
     [0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0],
-    [0, 1, 1, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0],
 ];
 // informacao da peca de cada jogador
 
@@ -133,15 +139,30 @@ function fizeram3EmLinha(map) {
     return horizontal3EmLinha(map) || vertical3EmLinha(map) || diagonal3EmLinha(map);
 }
 
+
+
+function count(array, valor) {
+    var contador = 0;
+    for (var i = 0; i < array.length; i++)
+        if (array[i] == valor)
+            contador++;
+    return contador;
+}
+
 function vertical4EmLinha(map) {
     for (var i = 0; i < ROWS - 3; i++)
         for (var j = 0; j < COLUMNS; j++)
             if (map[i][j] != 0 &&
                 map[i][j] == map[i + 1][j] &&
                 map[i][j] == map[i + 2][j] &&
-                map[i][j] == map[i + 3][j])
-            //return map[i][j];
+                map[i][j] == map[i + 3][j]) {
+                info4EmLinha = {
+                    pecas: [map[i][j], map[i + 1][j], map[i + 2][j], map[i + 3][j]],
+                    player: map[i][j]
+                };
                 return true;
+            }
+
     return false;
 }
 
@@ -151,9 +172,14 @@ function horizontal4EmLinha(map) {
             if (map[i][j] != 0 &&
                 map[i][j] == map[i][j + 1] &&
                 map[i][j] == map[i][j + 2] &&
-                map[i][j] == map[i][j + 3])
-            //return map[i][j];
+                map[i][j] == map[i][j + 3]) {
+                info4EmLinha = {
+                    pecas: [map[i][j], map[i][j + 1], map[i][j + 2], map[i][j + 3]],
+                    player: map[i][j]
+                };
                 return true;
+            }
+
     return false;
 }
 
@@ -163,239 +189,114 @@ function diagonal4EmLinha(map) {
             if (map[i][j] != 0 &&
                 map[i][j] == map[i - 1][j + 1] &&
                 map[i][j] == map[i - 2][j + 2] &&
-                map[i][j] == map[i - 3][j + 3])
-            //return map[i][j];
+                map[i][j] == map[i - 3][j + 3]) {
+                info4EmLinha = {
+                    pecas: [map[i][j], map[i][j + 1], map[i][j + 2], map[i][j + 3]],
+                    player: map[i][j]
+                };
                 return true;
+            }
+
 
     for (var i = 0; i < ROWS - 3; i++)
         for (var j = 0; j < COLUMNS - 3; j++)
             if (map[i][j] != 0 &&
                 map[i][j] == map[i + 1][j + 1] &&
                 map[i][j] == map[i + 2][j + 2] &&
-                map[i][j] == map[i + 3][j + 3])
-            //return map[i][j];
+                map[i][j] == map[i + 3][j + 3]) {
+                info4EmLinha = {
+                    pecas: [map[i][j], map[i + 1][j + 1], map[i + 2][j + 2], map[i + 3][j + 3]],
+                    player: map[i][j]
+                };
                 return true;
+            }
+}
 
 
-    for (var i = 0; i < COLUMNS - 3; i++) {
-        for (var j = 0; j < ROWS - 3; j++)
-            if (map[j][i] != 0 &&
-                map[j][i] == map[j + 1][i + 1] &&
-                map[j][i] == map[j + 2][i + 2] &&
-                map[j][i] == map[j + 3][i + 3])
-                return map[j][i];
 
-        for (var k = 3; k < ROWS; k++)
-            if (map[k][i] != 0 &&
-                map[k][i] == map[k - 1][i + 1] &&
-                map[k][i] == map[k - 2][i + 2] &&
-                map[k][i] == map[k - 3][i + 3])
-                return map[k][i]
-    }
+for (var i = 0; i < COLUMNS - 3; i++) {
+    for (var j = 0; j < ROWS - 3; j++)
+        if (map[j][i] != 0 &&
+            map[j][i] == map[j + 1][i + 1] &&
+            map[j][i] == map[j + 2][i + 2] &&
+            map[j][i] == map[j + 3][i + 3]) {
+            info4EmLinha = {
+                pecas: [map[i][j], map[j + 1][i + 1], map[j + 2][i + 2], map[j + 3][i + 3]],
+                player: map[i][j]
+            };
+            return true;
+        }
+
+    for (var k = 3; k < ROWS; k++)
+        if (map[k][i] != 0 &&
+            map[k][i] == map[k - 1][i + 1] &&
+            map[k][i] == map[k - 2][i + 2] &&
+            map[k][i] == map[k - 3][i + 3]) {
+            info4EmLinha = {
+                pecas: [map[i][j], map[k - 1][i + 1], map[k - 2][i + 2], map[k - 3][i + 3]],
+                player: map[i][j]
+            };
+            return true;
+        }
     return false;
 }
 
+
 function vertical3EmLinha(map) {
     for (var i = 0; i < ROWS - 3; i++)
-        for (var j = 0; j < COLUMNS; j++)
-            if ((map[i][j] == 0 &&
-                    map[i + 1][j] != 0 &&
-                    map[i + 1][j] == map[i + 2][j] &&
-                    map[i + 1][j] == map[i + 3][j]) ||
-
-                (map[i][j] != 0 &&
-                    map[i][j] == map[i + 1][j] &&
-                    map[i][j] == map[i + 2][j] &&
-                    map[i + 3][j] == 0))
-            //return map[i][j];
+        for (var j = 0; j < COLUMNS; j++) {
+            var array = [map[i][j], map[i + 1][j], map[i + 2][j], map[i + 3][j]];
+            if (count(array, 0) == 1 &&
+                (count(array, 1) == 3 || count(array, 2) == 3)) {
+                player3EmLinha = count(array, 1) ? pecaPlayer1 : pecaPlayer2;
                 return true;
+            }
+        }
     return false;
 }
 
 function horizontal3EmLinha(map) {
     for (var i = 0; i < ROWS; i++)
-        for (var j = 0; j < COLUMNS - 3; j++)
-            if ((map[i][j] == 0 &&
-                    map[i][j + 1] != 0 &&
-                    map[i][j + 1] == map[i][j + 2] &&
-                    map[i][j + 1] == map[i][j + 3]) ||
-
-                (map[i][j] != 0 &&
-                    map[i][j] == map[i][j + 1] &&
-                    map[i][j] == map[i][j + 2] &&
-                    map[i][j + 3] == 0))
-            //return map[i][j];
+        for (var j = 0; j < COLUMNS - 3; j++) {
+            var array = [map[i][j], map[i][j + 1], map[i][j + 2], map[i][j + 3]];
+            if (count(array, 0) == 1 &&
+                (count(array, 1) == 3 || count(array, 2) == 3)) {
+                player3EmLinha = count(array, 1) ? pecaPlayer1 : pecaPlayer2;
                 return true;
+            }
+        }
     return false;
 }
 
 function diagonal3EmLinha(map) {
     for (var i = 3; i < ROWS; i++)
-        for (var j = 0; j < COLUMNS - 3; j++)
-            if ((map[i][j] == 0 &&
-                    map[i - 1][j + 1] != 0 &&
-                    map[i - 1][j + 1] == map[i - 2][j + 2] &&
-                    map[i - 1][j + 1] == map[i - 3][j + 3]) ||
-
-                (map[i][j] != 0 &&
-                    map[i][j] == map[i - 1][j + 1] &&
-                    map[i][j] == map[i - 2][j + 2] &&
-                    map[i - 3][j + 3] == 0))
-            //return map[i][j];
+        for (var j = 0; j < COLUMNS - 3; j++) {
+            var array = [map[i][j], map[i - 1][j + 1], map[i - 2][j + 2], map[i - 3][j + 3]];
+            if (count(array, 0) == 1 &&
+                (count(array, 1) == 3 || count(array, 2) == 3))
                 return true;
-
-    for (var i = 0; i < ROWS - 3; i++)
-        for (var j = 0; j < COLUMNS - 3; j++)
-            if ((map[i][j] == 0 &&
-                    map[i + 1][j + 1] != 0 &&
-                    map[i + 1][j + 1] == map[i + 2][j + 2] &&
-                    map[i + 1][j + 1] == map[i + 3][j + 3]) ||
-
-                (map[i][j] != 0 &&
-                    map[i][j] == map[i + 1][j + 1] &&
-                    map[i][j] == map[i + 2][j + 2] &&
-                    map[i + 3][j + 3] == 0))
-            //return map[i][j];
-                return true;
+        }
 
     for (var i = 0; i < ROWS - 3; i++) {
-        for (var j = 0; j < COLUMNS - 3; j++)
-            if ((map[i][j] == 0 &&
-                    map[i + 1][j + 1] != 0 &&
-                    map[i + 1][j + 1] == map[i + 2][j + 2] &&
-                    map[i + 1][j + 1] == map[i + 3][j + 3]) ||
-
-                (map[i][j] != 0 &&
-                    map[i][j] == map[i + 1][j + 1] &&
-                    map[i][j] == map[i + 2][j + 2] &&
-                    map[i + 3][j + 3] == 0))
-            //return map[i][j];
+        for (var j = 0; j < COLUMNS - 3; j++) {
+            var array = [map[i][j], map[i + 1][j + 1], map[i + 2][j + 2], map[i + 3][j + 3]];
+            if (count(array, 0) == 0 &&
+                (count(array, 1) == 4 || count(array, 2) == 4))
                 return true;
-
+        }
         for (var k = 3; k < ROWS; k++) {
-            if ((map[k][i] == 0 &&
-                    map[k - 1][i + 1] != 0 &&
-                    map[k - 1][i + 1] == map[k - 2][i + 2] &&
-                    map[k - 1][i + 1] == map[k - 3][i + 3]) ||
-
-                (map[k][i] != 0 &&
-                    map[k][i] == map[k - 1][i + 1] &&
-                    map[k][i] == map[k - 2][i + 2] &&
-                    map[k - 3][i + 3] == 0))
-                return map[k][i];
-
-            if (map[k][i] != 0 &&
-                map[k][i] == map[k - 1][i + 1] &&
-                map[k][i] == map[k - 2][i + 2] &&
-                map[k][i] == map[k - 3][i + 3])
-                return map[k][i]
+            var array = [map[i][j], map[i + 1][j + 1], map[i + 2][j + 2], map[i + 3][j + 3]];
+            if (count(array, 0) == 0 &&
+                (count(array, 1) == 4 || count(array, 2) == 4))
+                return true;
+            array = [map[k][i], map[k - 1][i + 1], map[k - 2][i + 2], map[k - 3][i + 3]];
+            if (count(array, 0) == 0 &&
+                (count(array, 1) == 4 || count(array, 2) == 4))
+                return true;
         }
     }
     return false;
 }
-
-
-//var posicoes4EmLinha = [];
-
-/*function horizontal() {
-    for (var i = ROWS - 1; i >= 0; i--) {
-        //var existe3EmLinha = contagemLinha(map[i], 3);
-        var p1Fez4EmLinha = contagemLinha(map[i], 4, pecaPlayer1);
-        var p2Fez4EmLinha = contagemLinha(map[i], 4, pecaPlayer2);
-        if (p1Fez4EmLinha) {
-            p1Fez4EmLinha.linha_inicio = i;
-            p1Fez4EmLinha.linha_fim = i;
-            return p1Fez4EmLinha
-        } else if (p2Fez4EmLinha) {
-            p2Fez4EmLinha.linha_inicio = i;
-            p2Fez4EmLinha.linha_fim = i;
-            return p2Fez4EmLinha
-                //} else if (existe3EmLinha)
-                    //return existe3EmLinha;
-        }
-    }
-}
-
-function vertical() {
-    for (var j = 0; j < COLUMNS; j++) {
-        var arr = [];
-        for (var i = ROWS - 1; i >= 0; i--)
-            arr += map[i][j];
-        var existe3EmLinha = contagemLinha(arr, 3);
-        var p1Fez4EmLinha = contagemLinha(arr, 4, pecaPlayer1);
-        var p2Fez4EmLinha = contagemLinha(arr, 4, pecaPlayer2);
-        if (p1Fez4EmLinha) {
-            p1Fez4EmLinha.linha_inicio = p1Fez4EmLinha.coluna_inicio;
-            p1Fez4EmLinha.linha_fim = p1Fez4EmLinha.coluna_fim;
-            p1Fez4EmLinha.coluna_inicio = j;
-            p1Fez4EmLinha.coluna_fim = j;
-            return p1Fez4EmLinha;
-        } else if (p2Fez4EmLinha) {
-            p2Fez4EmLinha.linha_inicio = p2Fez4EmLinha.coluna_inicio;
-            p2Fez4EmLinha.linha_fim = p2Fez4EmLinha.coluna_fim;
-            p2Fez4EmLinha.coluna_inicio = j;
-            p2Fez4EmLinha.coluna_fim = j;
-            return p2Fez4EmLinha;
-        }
-        //else if (existe3EmLinha)
-                        //return existe3EmLinha;
-}
-}
-
-function diagonal() {
-    for (var j = 0; j < COLUMNS && j < ROWS; j++) {
-        var arr = [];
-        for (var i = ROWS - 1; i >= 0; i--)
-            arr += map[i][j];
-        var existe3EmLinha = contagemLinha(arr, 3);
-        var p1Fez4EmLinha = contagemLinha(arr, 4, pecaPlayer1);
-        var p2Fez4EmLinha = contagemLinha(arr, 4, pecaPlayer2);
-        if (p1Fez4EmLinha) {
-            p1Fez4EmLinha.linha_inicio = p1Fez4EmLinha.coluna_inicio;
-            p1Fez4EmLinha.linha_fim = p1Fez4EmLinha.coluna_fim;
-            p1Fez4EmLinha.coluna_inicio = j;
-            p1Fez4EmLinha.coluna_fim = j;
-            return p1Fez4EmLinha;
-        } else if (p2Fez4EmLinha) {
-            p2Fez4EmLinha.linha_inicio = p2Fez4EmLinha.coluna_inicio;
-            p2Fez4EmLinha.linha_fim = p2Fez4EmLinha.coluna_fim;
-            p2Fez4EmLinha.coluna_inicio = j;
-            p2Fez4EmLinha.coluna_fim = j;
-            return p2Fez4EmLinha;
-        }
-        //else if (existe3EmLinha)
-                        //return existe3EmLinha;
-    }
-}
-
-function contagemLinha(arr, valor, player) {
-    player = player ? player : null;
-    var match;
-    if (pecaPlayer2 == player && valor == 4)
-        match = /(2,?){4,}/.exec(arr.toString())
-    else if (player == pecaPlayer1 && valor == 4)
-        match = /(1,?){4,}/.exec(arr.toString())
-    else if (valor == 3) {
-        match = /(2,?){3}/.exec(arr.toString())
-        if (!match)
-            match = /(1,?){3}/.exec(arr.toString())
-    }
-
-    if (match && valor == 4) {
-        var fiz4EmLinha = {
-            player: player,
-            linha_inicio: 0,
-            coluna_inicio: match.index,
-            linha_fim: 0,
-            coluna_fim: match.index + match[0].replace(/,/g, "").length - 1
-        };
-        return fiz4EmLinha;
-    }
-    if (match && valor == 3)
-        return true;
-    return false;
-}
-*/
 
 function zonaJogavel(e) {
     var linha, coluna;
@@ -490,13 +391,13 @@ function endGame() {
 
 }
 
-//----------------------------------------------------------------------------
+/*//----------------------------------------------------------------------------
 // descodifica os valores em PX do estilo e devolve um float  
 function getValue(cssValue) {
     var number = cssValue.split("px")[0].trim();
     return parseFloat(number);
 }
-
+*/
 function mutedSound() {
     if (sounds.somDeFundo.muted == false) {
         sounds.somDeFundo.muted = true;
