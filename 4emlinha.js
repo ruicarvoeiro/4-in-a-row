@@ -109,24 +109,26 @@ function render() {
             }
         }
     }
-
-    if (fizeram4EmLinha(map)) {
+    var x = fizeram4EmLinha(map);
+    if (x) {
         intervalo = setInterval(endGame, 5);
         alert("4 em linha");
         endGame();
-        //title.innerHTML = "Fim de Jogo <u>" + x.player.playerName + "</u> ganhou!";
+        title.innerHTML = "Fim de Jogo <u>" + x.player.playerName + "</u> ganhou!";
         window.removeEventListener("mousemove", movimentoRato, false);
         for (var i = 0; i < zonaJogadas.length; i++)
             zonaJogadas[i].removeEventListener("mouseup", zonaJogavel, false);
-    } else if (fizeram3EmLinha(map)) {
-        if (estadoDoJogo.nextPlayer == pecaPlayer1) {
-            alert("P1 do 3");
-            sounds.play.jogador1_fez_3.play();
-        } else {
-            alert("P2 do 3");
-            sounds.play.jogador2_fez_3.play();
+    } else {
+        fizeram3EmLinha(map);
+        if (x) {
+            if (x == pecaPlayer1) {
+                alert(pecaPlayer1.playerName + " fez 3 em linha!");
+                sounds.play.jogador1_fez_3.play();
+            } else {
+                alert(pecaPlayer2.playerName + " fez 3 em linha!");
+                sounds.play.jogador2_fez_3.play();
+            }
         }
-        alert("3 em linha!");
     }
 
 }
