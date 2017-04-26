@@ -27,12 +27,13 @@ var sounds = {
 };
 
 var map = [
-    [0, 0, 0, 0, 0, 0, 0], //linhas
+    [1, 0, 0, 0, 0, 0, 0], //linhas
     [0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0],
+    [1, 1, 1, 0, 0, 0, 0],
+
 ];
 // informacao da peca de cada jogador
 
@@ -106,25 +107,30 @@ function render() {
                     cell.style.backgroundPositionY = pecaPlayer2.rowColor + "px";
                     cell.className = "pecaTabuleiro";
                     break;
+                case "animar":
+                    cell.className = "pecaTabuleiro pecaAnimada";
+                    break;
             }
         }
     }
+    if (estadoDoJogo.emCurso) {
 
-    if (fizeram4EmLinha(map)) {
-        intervalo = setInterval(endGame, 5);
-        alert("4 em linha");
-        endGame();
-        title.innerHTML = "Fim de Jogo <u>" + info4EmLinha.player.playerName + "</u> ganhou!";
-        window.removeEventListener("mousemove", movimentoRato, false);
-        for (var i = 0; i < zonaJogadas.length; i++)
-            zonaJogadas[i].removeEventListener("mouseup", zonaJogavel, false);
-    } else if (fizeram3EmLinha(map)) {
-        if (player3EmLinha == pecaPlayer1) {
-            alert(pecaPlayer1.playerName + " fez 3 em linha!");
-            sounds.play.jogador1_fez_3.play();
-        } else {
-            alert(pecaPlayer2.playerName + " fez 3 em linha!");
-            sounds.play.jogador2_fez_3.play();
+        if (fizeram4EmLinha(map)) {
+            intervalo = setInterval(endGame, 5);
+            alert("4 em linha");
+            endGame();
+            title.innerHTML = "Fim de Jogo <u>" + info4EmLinha.player.playerName + "</u> ganhou!";
+            window.removeEventListener("mousemove", movimentoRato, false);
+            for (var i = 0; i < zonaJogadas.length; i++)
+                zonaJogadas[i].removeEventListener("mouseup", zonaJogavel, false);
+        } else if (fizeram3EmLinha(map)) {
+            if (player3EmLinha == pecaPlayer1) {
+                alert(pecaPlayer1.playerName + " fez 3 em linha!");
+                sounds.jogador1_fez_3.play();
+            } else {
+                alert(pecaPlayer2.playerName + " fez 3 em linha!");
+                sounds.jogador2_fez_3.play();
+            }
         }
     }
 }
@@ -157,7 +163,7 @@ function vertical4EmLinha(map) {
                 map[i][j] == map[i + 3][j]) {
                 info4EmLinha = {
                     pecas: [map[i][j], map[i + 1][j], map[i + 2][j], map[i + 3][j]],
-                    player: map[i][j]
+                    player: map[i][j] == 1 ? pecaPlayer1 : pecaPlayer2
                 };
                 return true;
             }
@@ -174,7 +180,7 @@ function horizontal4EmLinha(map) {
                 map[i][j] == map[i][j + 3]) {
                 info4EmLinha = {
                     pecas: [map[i][j], map[i][j + 1], map[i][j + 2], map[i][j + 3]],
-                    player: map[i][j]
+                    player: map[i][j] == 1 ? pecaPlayer1 : pecaPlayer2
                 };
                 return true;
             }
@@ -191,7 +197,7 @@ function diagonal4EmLinha(map) {
                 map[i][j] == map[i - 3][j + 3]) {
                 info4EmLinha = {
                     pecas: [map[i][j], map[i][j + 1], map[i][j + 2], map[i][j + 3]],
-                    player: map[i][j]
+                    player: map[i][j] == 1 ? pecaPlayer1 : pecaPlayer2
                 };
                 return true;
             }
@@ -205,7 +211,7 @@ function diagonal4EmLinha(map) {
                 map[i][j] == map[i + 3][j + 3]) {
                 info4EmLinha = {
                     pecas: [map[i][j], map[i + 1][j + 1], map[i + 2][j + 2], map[i + 3][j + 3]],
-                    player: map[i][j]
+                    player: map[i][j] == 1 ? pecaPlayer1 : pecaPlayer2
                 };
                 return true;
             }
@@ -220,7 +226,7 @@ function diagonal4EmLinha(map) {
                 map[j][i] == map[j + 3][i + 3]) {
                 info4EmLinha = {
                     pecas: [map[i][j], map[j + 1][i + 1], map[j + 2][i + 2], map[j + 3][i + 3]],
-                    player: map[i][j]
+                    player: map[i][j] == 1 ? pecaPlayer1 : pecaPlayer2
                 };
                 return true;
             }
@@ -232,7 +238,7 @@ function diagonal4EmLinha(map) {
                 map[k][i] == map[k - 3][i + 3]) {
                 info4EmLinha = {
                     pecas: [map[i][j], map[k - 1][i + 1], map[k - 2][i + 2], map[k - 3][i + 3]],
-                    player: map[i][j]
+                    player: map[i][j] == 1 ? pecaPlayer1 : pecaPlayer2
                 };
                 return true;
             }
@@ -385,6 +391,9 @@ function movimentoRato(e) {
 }
 
 function endGame() {
+    map[0][0] = "animar";
+    estadoDoJogo.emCurso = false;
+    render();
     sounds.somDeFundo.muted = true;
     sounds.ganhou.play();
 

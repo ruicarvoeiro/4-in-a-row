@@ -354,3 +354,32 @@ p {
     width: 384px;
     padding: 10px;
 }
+
+
+/*Animação das peças*/
+
+@keyframes spriteAnimation {
+    0% {
+        background-position-x: 0px;
+    }
+    25% {
+        background-position-x: 90px;
+    }
+    50% {
+        background-position-x: 180px;
+    }
+    75% {
+        background-position-x: 270px;
+    }
+    100% {
+        background-position-x: 360px;
+    }
+}
+
+.pecaAnimada {
+    animation-name: sprispriteAnimation;
+    animation-duration: 1s;
+    animation-timing-function: linear;
+    animation-iteration-count: 1;
+    animation-direction: alternate;
+}
