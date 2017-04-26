@@ -109,29 +109,26 @@ function render() {
             }
         }
     }
-    var x = fizeram4EmLinha(map);
-    if (x) {
+
+    if (fizeram4EmLinha(map)) {
         intervalo = setInterval(endGame, 5);
         alert("4 em linha");
         endGame();
-        title.innerHTML = "Fim de Jogo <u>" + x.player.playerName + "</u> ganhou!";
+        title.innerHTML = "Fim de Jogo <u>" + info4EmLinha.player.playerName + "</u> ganhou!";
         window.removeEventListener("mousemove", movimentoRato, false);
         for (var i = 0; i < zonaJogadas.length; i++)
             zonaJogadas[i].removeEventListener("mouseup", zonaJogavel, false);
-    } else {
-        fizeram3EmLinha(map);
-        if (x) {
-            if (x == pecaPlayer1) {
-                alert(pecaPlayer1.playerName + " fez 3 em linha!");
-                sounds.play.jogador1_fez_3.play();
-            } else {
-                alert(pecaPlayer2.playerName + " fez 3 em linha!");
-                sounds.play.jogador2_fez_3.play();
-            }
+    } else if (fizeram3EmLinha(map)) {
+        if (player3EmLinha == pecaPlayer1) {
+            alert(pecaPlayer1.playerName + " fez 3 em linha!");
+            sounds.play.jogador1_fez_3.play();
+        } else {
+            alert(pecaPlayer2.playerName + " fez 3 em linha!");
+            sounds.play.jogador2_fez_3.play();
         }
     }
-
 }
+
 
 function fizeram4EmLinha(map) {
     return horizontal4EmLinha(map) || vertical4EmLinha(map) || diagonal4EmLinha(map);
@@ -212,34 +209,34 @@ function diagonal4EmLinha(map) {
                 };
                 return true;
             }
-}
 
 
 
-for (var i = 0; i < COLUMNS - 3; i++) {
-    for (var j = 0; j < ROWS - 3; j++)
-        if (map[j][i] != 0 &&
-            map[j][i] == map[j + 1][i + 1] &&
-            map[j][i] == map[j + 2][i + 2] &&
-            map[j][i] == map[j + 3][i + 3]) {
-            info4EmLinha = {
-                pecas: [map[i][j], map[j + 1][i + 1], map[j + 2][i + 2], map[j + 3][i + 3]],
-                player: map[i][j]
-            };
-            return true;
-        }
+    for (var i = 0; i < COLUMNS - 3; i++) {
+        for (var j = 0; j < ROWS - 3; j++)
+            if (map[j][i] != 0 &&
+                map[j][i] == map[j + 1][i + 1] &&
+                map[j][i] == map[j + 2][i + 2] &&
+                map[j][i] == map[j + 3][i + 3]) {
+                info4EmLinha = {
+                    pecas: [map[i][j], map[j + 1][i + 1], map[j + 2][i + 2], map[j + 3][i + 3]],
+                    player: map[i][j]
+                };
+                return true;
+            }
 
-    for (var k = 3; k < ROWS; k++)
-        if (map[k][i] != 0 &&
-            map[k][i] == map[k - 1][i + 1] &&
-            map[k][i] == map[k - 2][i + 2] &&
-            map[k][i] == map[k - 3][i + 3]) {
-            info4EmLinha = {
-                pecas: [map[i][j], map[k - 1][i + 1], map[k - 2][i + 2], map[k - 3][i + 3]],
-                player: map[i][j]
-            };
-            return true;
-        }
+        for (var k = 3; k < ROWS; k++)
+            if (map[k][i] != 0 &&
+                map[k][i] == map[k - 1][i + 1] &&
+                map[k][i] == map[k - 2][i + 2] &&
+                map[k][i] == map[k - 3][i + 3]) {
+                info4EmLinha = {
+                    pecas: [map[i][j], map[k - 1][i + 1], map[k - 2][i + 2], map[k - 3][i + 3]],
+                    player: map[i][j]
+                };
+                return true;
+            }
+    }
     return false;
 }
 
