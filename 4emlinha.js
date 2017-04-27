@@ -34,9 +34,9 @@ var map = [
     [0, 0, 0, 0, 0, 0, 0], //linhas
     [0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 1, 1, 1],
     [0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0],
-    [1, 1, 1, 0, 1, 0, 1]
+    [0, 0, 0, 0, 0, 0, 0]
 ];
 // informacao da peca de cada jogador
 
@@ -55,7 +55,7 @@ function initGame() {
     estadoDoJogo.outroPlayer.peca.className = "escondido";
 
     stage = document.getElementById("stage");
-    output = document.querySelector("#output");
+    output = document.getElementById("textoDeJogo");
 
     // definir sons
     sounds.somDeFundo = document.getElementById("somDeFundo");
@@ -125,7 +125,7 @@ function render() {
             p2: false
         };
         if (fizeram4EmLinha(map)) {
-            alert("4 em linha");
+            output.innerHTML = "4 em linha";
             estadoDoJogo.vencedor = info4EmLinha.player;
             endGame();
             title.innerHTML = "Fim de Jogo <u>" + info4EmLinha.player.playerName + "</u> ganhou!";
@@ -133,13 +133,19 @@ function render() {
             for (var i = 0; i < zonaJogadas.length; i++)
                 zonaJogadas[i].removeEventListener("mouseup", zonaJogavel, false);
         } else if (fizeram3EmLinha(map)) {
-            if (player3EmLinha.p1) {
-                alert(pecaPlayer1.playerName + " fez 3 em linha!");
+            if (player3EmLinha.p1 && player3EmLinha.p2) {
+                output.innerHTML = pecaPlayer1.playerName + " e " + pecaPlayer2.playerName + " fez 3 em linha!";
                 sounds.jogador1_fez_3.play();
-            }
-            if (player3EmLinha.p2) {
-                alert(pecaPlayer2.playerName + " fez 3 em linha!");
                 sounds.jogador2_fez_3.play();
+            } else {
+                if (player3EmLinha.p1) {
+                    output.innerHTML = pecaPlayer1.playerName + " fez 3 em linha!";
+                    sounds.jogador1_fez_3.play();
+                }
+                if (player3EmLinha.p2) {
+                    output.innerHTML = pecaPlayer2.playerName + " fez 3 em linha!";
+                    sounds.jogador2_fez_3.play();
+                }
             }
         }
     }
@@ -292,8 +298,8 @@ function vertical3EmLinha(map) {
             if (count(array, 0) == 1 &&
                 (count(array, 1) == 3 || count(array, 2) == 3)) {
                 player3EmLinha = {
-                    p1: count(array, 1) == 3,
-                    p2: count(array, 2) == 3
+                    p1: count(array, 1) == 3 || player3EmLinha.p1,
+                    p2: count(array, 2) == 3 || player3EmLinha.p2
                 };
             }
         }
@@ -307,8 +313,8 @@ function horizontal3EmLinha(map) {
             if (count(array, 0) == 1 &&
                 (count(array, 1) == 3 || count(array, 2) == 3)) {
                 player3EmLinha = {
-                    p1: count(array, 1) == 3,
-                    p2: count(array, 2) == 3
+                    p1: count(array, 1) == 3 || player3EmLinha.p1,
+                    p2: count(array, 2) == 3 || player3EmLinha.p2
                 };
             }
         }
@@ -322,8 +328,8 @@ function diagonal3EmLinha(map) {
             if (count(array, 0) == 1 &&
                 (count(array, 1) == 3 || count(array, 2) == 3))
                 player3EmLinha = {
-                    p1: count(array, 1) == 3,
-                    p2: count(array, 2) == 3
+                    p1: count(array, 1) == 3 || player3EmLinha.p1,
+                    p2: count(array, 2) == 3 || player3EmLinha.p2
                 };
         }
 
@@ -334,8 +340,8 @@ function diagonal3EmLinha(map) {
             if (count(array, 0) == 0 &&
                 (count(array, 1) == 4 || count(array, 2) == 4))
                 player3EmLinha = {
-                    p1: count(array, 1) == 3,
-                    p2: count(array, 2) == 3
+                    p1: count(array, 1) == 3 || player3EmLinha.p1,
+                    p2: count(array, 2) == 3 || player3EmLinha.p2
                 };
         }
         for (var k = 3; k < ROWS; k++) {
@@ -343,15 +349,15 @@ function diagonal3EmLinha(map) {
             if (count(array, 0) == 0 &&
                 (count(array, 1) == 4 || count(array, 2) == 4))
                 player3EmLinha = {
-                    p1: count(array, 1) == 3,
-                    p2: count(array, 2) == 3
+                    p1: count(array, 1) == 3 || player3EmLinha.p1,
+                    p2: count(array, 2) == 3 || player3EmLinha.p2
                 };
             array = [map[k][i], map[k - 1][i + 1], map[k - 2][i + 2], map[k - 3][i + 3]];
             if (count(array, 0) == 0 &&
                 (count(array, 1) == 4 || count(array, 2) == 4))
                 player3EmLinha = {
-                    p1: count(array, 1) == 3,
-                    p2: count(array, 2) == 3
+                    p1: count(array, 1) == 3 || player3EmLinha.p1,
+                    p2: count(array, 2) == 3 || player3EmLinha.p2
                 };
         }
     }
@@ -403,7 +409,7 @@ function pecaJogada(coluna) {
             return linha
         }
 
-    alert("Coluna cheia!");
+    output.innerHTML = "Coluna cheia!";
     return null;
 }
 
