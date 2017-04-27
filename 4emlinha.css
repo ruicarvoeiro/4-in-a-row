@@ -362,24 +362,23 @@ p {
     0% {
         background-position-x: 0px;
     }
-    25% {
+    20% {
         background-position-x: 90px;
     }
-    50% {
+    40% {
         background-position-x: 180px;
     }
-    75% {
+    60% {
         background-position-x: 270px;
     }
-    100% {
+    80% {
         background-position-x: 360px;
+    }
+    100% {
+        background-position-x: 450px;
     }
 }
 
 .pecaAnimada {
-    animation-name: sprispriteAnimation;
-    animation-duration: 1s;
-    animation-timing-function: linear;
-    animation-iteration-count: 1;
-    animation-direction: alternate;
+    animation: spriteAnimation 0.25s steps(1) infinite;
 }
