@@ -32,12 +32,12 @@ var sounds = {
 };
 
 var map = [
-    [0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0]
+    [1, 0, 0, 0, 0, 1, 0],
+    [0, 1, 0, 0, 1, 0, 0],
+    [0, 0, 1, 0, 0, 0, 0],
+    [0, 0, 1, 0, 0, 0, 0],
+    [0, 1, 0, 2, 1, 0, 0],
+    [1, 0, 0, 2, 0, 1, 0]
 ];
 // informacao da peca de cada jogador
 
@@ -222,7 +222,7 @@ function horizontal4EmLinha(map) {
 
 function diagonal4EmLinha(map) {
     //Canto inferior esquerdo até canto superior direito
-    for (var i = 3; i < ROWS; i++)
+    for (var i = ROWS - 1; i >= 3; i--)
         for (var j = 0; j < COLUMNS - 3; j++) {
             if (map[i][j] != 0 &&
                 map[i][j] == map[i - 1][j + 1] &&
@@ -249,7 +249,7 @@ function diagonal4EmLinha(map) {
 
 
     //Canto inferior direito até canto superior esquerdo
-    for (var i = 3; i < ROWS; i++)
+    for (var i = ROWS - 1; i >= 3; i--)
         for (var j = 3; j < COLUMNS; j++) {
             if (map[i][j] != 0 &&
                 map[i][j] == map[i - 1][j - 1] &&
