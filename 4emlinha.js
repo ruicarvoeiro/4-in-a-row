@@ -32,12 +32,12 @@ var sounds = {
 };
 
 var map = [
-    [1, 0, 0, 0, 0, 1, 0],
-    [0, 1, 0, 0, 1, 0, 0],
-    [0, 0, 1, 0, 0, 0, 0],
-    [0, 0, 1, 0, 0, 0, 0],
-    [0, 1, 0, 2, 1, 0, 0],
-    [1, 0, 0, 2, 0, 1, 0]
+    [0, 2, 2, 2, 1, 1, 1],
+    [2, 0, 0, 0, 0, 0, 0],
+    [2, 0, 0, 0, 0, 0, 0],
+    [1, 0, 0, 0, 0, 0, 0],
+    [1, 0, 0, 0, 0, 0, 0],
+    [1, 0, 0, 0, 0, 0, 0]
 ];
 // informacao da peca de cada jogador
 
@@ -121,6 +121,7 @@ function render() {
     }
 
     if (estadoDoJogo.emCurso) {
+        empate();
         player3EmLinha = {
             p1: false,
             p2: false
@@ -355,18 +356,7 @@ function zonaJogavel(e) {
         posicao = 0;
         intervalo = setInterval(frames, (linha + 1) / 2, linha);
     } else {
-        var tudoCheio = true;
-        for (var j = 0; j < COLUMNS; j++)
-            if (map[0][j] == 0) {
-                output.innerHTML = ("Coluna cheia!");
-                tudoCheio = false;
-            }
-        if (tudoCheio) {
-            title.innerHTML = ("Fim de Jogo. Empate !");
-            stopEverything();
-            render();
-            sounds.somDeFundo.muted = true;
-        }
+        empate();
     }
 }
 
@@ -484,4 +474,20 @@ function helper3EmLInha(cel, linha, coluna) {
     if (linha == 5)
         return true;
     return (cel != 0 || (map[linha + 1][coluna] != 0))
+}
+
+function empate() {
+    var tudoCheio = true;
+    for (var j = 0; j < COLUMNS; j++)
+        if (map[0][j] == 0)
+            tudoCheio = false;
+        else
+            output.innerHTML = ("Coluna cheia!");
+    if (tudoCheio) {
+        title.innerHTML = ("Fim de Jogo. Empate !");
+        stopEverything();
+        render();
+        sounds.somDeFundo.muted = true;
+    }
+    return tudoCheio;
 }

@@ -7,16 +7,18 @@ function startAi() {
 }
 
 function jogaPC() {
+    var mapa1 = map.slice(0);
     var pontuacoes = [];
     for (var i = 0; i < 7; i++) {
-        novoMapa = resetMapaDePossibilidades();
-        var mapa = novoMapa.slice();
+        var mapa = map1.slice(0);
         pontuacoes[i] = calculaPontuacao(mapa) + makeAMove(mapa, COMPUTERLEVEL, i);
     }
 
     var opcaoEscolhida = getMelhorOpcao(pontuacoes);
     var linha = pecaJogada(opcaoEscolhida, map);
-    map[linha][opcaoEscolhida] = 2;
+    render();
+    if (estadoDoJogo.emCurso)
+        map[linha][opcaoEscolhida] = 2;
 }
 
 function getMelhorOpcao(array) {
@@ -27,16 +29,6 @@ function getMelhorOpcao(array) {
             arrayMax.push(i);
     }
     return arrayMax[Math.floor(Math.random() * (arrayMax.length - 1))];
-}
-
-function resetMapaDePossibilidades() {
-    var mapazinho = [];
-    for (var i = 0; i < map.length; i++) {
-        mapazinho[i] = [];
-        for (var j = 0; j < map[i].length; j++)
-            mapazinho[i][j] = map[i][j];
-    }
-    return mapazinho;
 }
 
 function calculaPontuacao(mapa) {
@@ -61,9 +53,9 @@ function makeAMove(mapa, densidade, coluna) {
             return 99999;
     }
     if (densidade == 1)
-        return (player === 2 ? 1 : -1) * Math.floor(calculaPontuacao(mapa.slice())); // * (densidade / 2));
-    var pontuacao = (player === 2 ? 1 : -1) * calculaPontuacao(mapa.slice()); // * densidade;
+        return (player === 2 ? 1 : -1) * Math.floor(calculaPontuacao(mapa.slice(0))); // * (densidade / 2));
+    var pontuacao = (player === 2 ? 1 : -1) * calculaPontuacao(mapa.slice(0)); // * densidade;
     for (var i = 0; i < 7; i++)
-        pontuacao += makeAMove(mapa.slice(), --densidade, i);
+        pontuacao += makeAMove(mapa.slice(0), --densidade, i);
     return pontuacao;
 }
