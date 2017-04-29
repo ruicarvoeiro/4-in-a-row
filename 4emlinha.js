@@ -1,7 +1,6 @@
 var jogoComPC;
 var stage; // stage do jogo
 var output; // mensagens de informacao
-
 var info4EmLinha = {
     player: null,
     pecas: []
@@ -14,7 +13,6 @@ var player3EmLinha = {
 
 var estadoDoJogo = {
     emCurso: true,
-    tempoDeJogo: 0,
     nextPlayer: pecaPlayer1,
     outroPlayer: pecaPlayer2,
     offsetX: 0,
