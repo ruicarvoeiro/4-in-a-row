@@ -6,6 +6,7 @@ var info4EmLinha = {
     player: null,
     pecas: []
 };
+
 var player3EmLinha = {
     p1: false,
     p2: false
@@ -31,10 +32,10 @@ var sounds = {
 };
 
 var map = [
-    [0, 0, 0, 0, 0, 0, 0], //linhas
     [0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 1, 1, 1],
+    [0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0]
 ];
@@ -129,9 +130,7 @@ function render() {
             estadoDoJogo.vencedor = info4EmLinha.player;
             endGame();
             title.innerHTML = "Fim de Jogo <u>" + info4EmLinha.player.playerName + "</u> ganhou!";
-            window.removeEventListener("mousemove", movimentoRato, false);
-            for (var i = 0; i < zonaJogadas.length; i++)
-                zonaJogadas[i].removeEventListener("mouseup", zonaJogavel, false);
+            stopEverything();
         } else if (fizeram3EmLinha(map)) {
             if (player3EmLinha.p1 && player3EmLinha.p2) {
                 output.innerHTML = pecaPlayer1.playerName + " e " + pecaPlayer2.playerName + " fez 3 em linha!";
@@ -147,7 +146,8 @@ function render() {
                     sounds.jogador2_fez_3.play();
                 }
             }
-        }
+        } else
+            output.innerHTML = "";
     }
 }
 
@@ -176,14 +176,18 @@ function vertical4EmLinha(map) {
                 map[i][j] == map[i + 2][j] &&
                 map[i][j] == map[i + 3][j]) {
                 info4EmLinha = {
-                    pecas: [
-                        [i, j],
-                        [i + 1, j],
-                        [i + 2, j],
-                        [i + 3, j]
-                    ],
+                    pecas: [],
                     player: map[i][j] == 1 ? pecaPlayer1 : pecaPlayer2
                 };
+                try {
+                    var valor = 0;
+                    while (true) {
+                        if (map[i][j] == map[i + valor][j])
+                            info4EmLinha.pecas.push([i + valor, j])
+                        else break;
+                        valor++;
+                    }
+                } catch (e) {}
                 return true;
             }
 
@@ -198,14 +202,18 @@ function horizontal4EmLinha(map) {
                 map[i][j] == map[i][j + 2] &&
                 map[i][j] == map[i][j + 3]) {
                 info4EmLinha = {
-                    pecas: [
-                        [i, j],
-                        [i, j + 1],
-                        [i, j + 2],
-                        [i, j + 3]
-                    ],
+                    pecas: [],
                     player: map[i][j] == 1 ? pecaPlayer1 : pecaPlayer2
                 };
+                try {
+                    var valor = 0;
+                    while (true) {
+                        if (map[i][j] == map[i][j + valor])
+                            info4EmLinha.pecas.push([i, j + valor])
+                        else break;
+                        valor++;
+                    }
+                } catch (e) {}
                 return true;
             }
 
@@ -213,80 +221,56 @@ function horizontal4EmLinha(map) {
 }
 
 function diagonal4EmLinha(map) {
+    //Canto inferior esquerdo até canto superior direito
     for (var i = 3; i < ROWS; i++)
-        for (var j = 0; j < COLUMNS - 3; j++)
+        for (var j = 0; j < COLUMNS - 3; j++) {
             if (map[i][j] != 0 &&
                 map[i][j] == map[i - 1][j + 1] &&
                 map[i][j] == map[i - 2][j + 2] &&
                 map[i][j] == map[i - 3][j + 3]) {
                 info4EmLinha = {
-                    pecas: [
-                        [i, j],
-                        [i, j + 1],
-                        [i, j + 2],
-                        [i, j + 3]
-                    ],
+                    pecas: [],
                     player: map[i][j] == 1 ? pecaPlayer1 : pecaPlayer2
                 };
+                try {
+                    var valor = 0;
+                    while (true) {
+                        if (map[i][j] == map[i - valor][j + valor])
+                            info4EmLinha.pecas.push([i - valor, j + valor])
+                        else break;
+                        valor++;
+                    }
+                } catch (e) {}
                 return true;
             }
+        }
 
 
-    for (var i = 0; i < ROWS - 3; i++)
-        for (var j = 0; j < COLUMNS - 3; j++)
+
+
+    //Canto inferior direito até canto superior esquerdo
+    for (var i = 3; i < ROWS; i++)
+        for (var j = 3; j < COLUMNS; j++) {
             if (map[i][j] != 0 &&
-                map[i][j] == map[i + 1][j + 1] &&
-                map[i][j] == map[i + 2][j + 2] &&
-                map[i][j] == map[i + 3][j + 3]) {
+                map[i][j] == map[i - 1][j - 1] &&
+                map[i][j] == map[i - 2][j - 2] &&
+                map[i][j] == map[i - 3][j - 3]) {
                 info4EmLinha = {
-                    pecas: [
-                        [i, j],
-                        [i + 1, j + 1],
-                        [i + 2, j + 2],
-                        [i + 3, j + 3]
-                    ],
+                    pecas: [],
                     player: map[i][j] == 1 ? pecaPlayer1 : pecaPlayer2
                 };
+                try {
+                    var valor = 0;
+                    while (true) {
+                        if (map[i][j] == map[i - valor][j - valor])
+                            info4EmLinha.pecas.push([i - valor, j - valor])
+                        else break;
+                        valor++;
+                    }
+                } catch (e) {}
                 return true;
             }
-
-
-
-    for (var i = 0; i < COLUMNS - 3; i++) {
-        for (var j = 0; j < ROWS - 3; j++)
-            if (map[j][i] != 0 &&
-                map[j][i] == map[j + 1][i + 1] &&
-                map[j][i] == map[j + 2][i + 2] &&
-                map[j][i] == map[j + 3][i + 3]) {
-                info4EmLinha = {
-                    pecas: [
-                        [i, j],
-                        [j + 1, i + 1],
-                        [j + 2, i + 2],
-                        [j + 3, i + 3]
-                    ],
-                    player: map[i][j] == 1 ? pecaPlayer1 : pecaPlayer2
-                };
-                return true;
-            }
-
-        for (var k = 3; k < ROWS; k++)
-            if (map[k][i] != 0 &&
-                map[k][i] == map[k - 1][i + 1] &&
-                map[k][i] == map[k - 2][i + 2] &&
-                map[k][i] == map[k - 3][i + 3]) {
-                info4EmLinha = {
-                    pecas: [
-                        [i, j],
-                        [k - 1, i + 1],
-                        [k - 2, i + 2],
-                        [k - 3, i + 3]
-                    ],
-                    player: map[i][j] == 1 ? pecaPlayer1 : pecaPlayer2
-                };
-                return true;
-            }
-    }
+        }
     return false;
 }
 
@@ -295,7 +279,8 @@ function vertical3EmLinha(map) {
     for (var i = 0; i < ROWS - 3; i++)
         for (var j = 0; j < COLUMNS; j++) {
             var array = [map[i][j], map[i + 1][j], map[i + 2][j], map[i + 3][j]];
-            if (count(array, 0) == 1 &&
+            var below = helper3EmLInha(map[i][j], i, j) && helper3EmLInha(map[i + 1][j], i + 1, j) && helper3EmLInha(map[i + 2][j], i + 2, j) && helper3EmLInha(map[i + 3][j], i + 3, j);
+            if (below && count(array, 0) == 1 &&
                 (count(array, 1) == 3 || count(array, 2) == 3)) {
                 player3EmLinha = {
                     p1: count(array, 1) == 3 || player3EmLinha.p1,
@@ -310,7 +295,8 @@ function horizontal3EmLinha(map) {
     for (var i = 0; i < ROWS; i++)
         for (var j = 0; j < COLUMNS - 3; j++) {
             var array = [map[i][j], map[i][j + 1], map[i][j + 2], map[i][j + 3]];
-            if (count(array, 0) == 1 &&
+            var below = helper3EmLInha(map[i][j], i, j) && helper3EmLInha(map[i][j + 1], i, j + 1) && helper3EmLInha(map[i][j + 2], i, j + 2) && helper3EmLInha(map[i][j + 3], i, j + 3);
+            if (below && count(array, 0) == 1 &&
                 (count(array, 1) == 3 || count(array, 2) == 3)) {
                 player3EmLinha = {
                     p1: count(array, 1) == 3 || player3EmLinha.p1,
@@ -322,10 +308,12 @@ function horizontal3EmLinha(map) {
 }
 
 function diagonal3EmLinha(map) {
+    //Canto inferior esquerdo até canto superior direito
     for (var i = 3; i < ROWS; i++)
         for (var j = 0; j < COLUMNS - 3; j++) {
             var array = [map[i][j], map[i - 1][j + 1], map[i - 2][j + 2], map[i - 3][j + 3]];
-            if (count(array, 0) == 1 &&
+            var below = helper3EmLInha(map[i][j], i, j) && helper3EmLInha(map[i - 1][j + 1], i - 1, j + 1) && helper3EmLInha(map[i - 2][j + 2], i - 2, j + 2) && helper3EmLInha(map[i - 3][j + 3], i - 3, j + 3);
+            if (below && count(array, 0) == 1 &&
                 (count(array, 1) == 3 || count(array, 2) == 3))
                 player3EmLinha = {
                     p1: count(array, 1) == 3 || player3EmLinha.p1,
@@ -333,34 +321,18 @@ function diagonal3EmLinha(map) {
                 };
         }
 
-
-    for (var i = 0; i < ROWS - 3; i++) {
-        for (var j = 0; j < COLUMNS - 3; j++) {
-            var array = [map[i][j], map[i + 1][j + 1], map[i + 2][j + 2], map[i + 3][j + 3]];
-            if (count(array, 0) == 0 &&
-                (count(array, 1) == 4 || count(array, 2) == 4))
+    //Canto inferior direito até canto superior esquerdo
+    for (var i = 3; i < ROWS; i++)
+        for (var j = 3; j < COLUMNS; j++) {
+            var array = [map[i][j], map[i - 1][j - 1], map[i - 2][j - 2], map[i - 3][j - 3]];
+            var below = helper3EmLInha(map[i][j], i, j) && helper3EmLInha(map[i - 1][j - 1], i - 1, j - 1) && helper3EmLInha(map[i - 2][j - 2], i - 2, j - 2) && helper3EmLInha(map[i - 3][j - 3], i - 3, j - 3);
+            if (below && count(array, 0) == 1 &&
+                (count(array, 1) == 3 || count(array, 2) == 3))
                 player3EmLinha = {
                     p1: count(array, 1) == 3 || player3EmLinha.p1,
                     p2: count(array, 2) == 3 || player3EmLinha.p2
                 };
         }
-        for (var k = 3; k < ROWS; k++) {
-            var array = [map[i][j], map[i + 1][j + 1], map[i + 2][j + 2], map[i + 3][j + 3]];
-            if (count(array, 0) == 0 &&
-                (count(array, 1) == 4 || count(array, 2) == 4))
-                player3EmLinha = {
-                    p1: count(array, 1) == 3 || player3EmLinha.p1,
-                    p2: count(array, 2) == 3 || player3EmLinha.p2
-                };
-            array = [map[k][i], map[k - 1][i + 1], map[k - 2][i + 2], map[k - 3][i + 3]];
-            if (count(array, 0) == 0 &&
-                (count(array, 1) == 4 || count(array, 2) == 4))
-                player3EmLinha = {
-                    p1: count(array, 1) == 3 || player3EmLinha.p1,
-                    p2: count(array, 2) == 3 || player3EmLinha.p2
-                };
-        }
-    }
     return player3EmLinha.p1 || player3EmLinha.p2;
 }
 
@@ -368,7 +340,7 @@ function zonaJogavel(e) {
     var linha, coluna;
     for (coluna = 0; coluna < zonaJogadas.length; coluna++)
         if (e.currentTarget == zonaJogadas[coluna]) {
-            linha = pecaJogada(coluna);
+            linha = pecaJogada(coluna, map);
             break;
         }
     if (!(linha == null)) {
@@ -381,7 +353,20 @@ function zonaJogavel(e) {
         var stagePos = stage.getBoundingClientRect();
         estadoDoJogo.nextPlayer.peca.style.left = 45 + coluna * 90 + stagePos.left + "px";
         posicao = 0;
-        intervalo = setInterval(frames, linha + 1, linha);
+        intervalo = setInterval(frames, (linha + 1) / 2, linha);
+    } else {
+        var tudoCheio = true;
+        for (var j = 0; j < COLUMNS; j++)
+            if (map[0][j] == 0) {
+                output.innerHTML = ("Coluna cheia!");
+                tudoCheio = false;
+            }
+        if (tudoCheio) {
+            title.innerHTML = ("Fim de Jogo. Empate !");
+            stopEverything();
+            render();
+            sounds.somDeFundo.muted = true;
+        }
     }
 }
 
@@ -401,15 +386,13 @@ function frames(y) {
     }
 }
 
-function pecaJogada(coluna) {
+function pecaJogada(coluna, map) {
     for (var i = map.length - 1; i >= 0; i--)
         if (map[i][coluna] == 0) {
             var linha = i;
             map[linha][coluna] = estadoDoJogo.nextPlayer.valor;
             return linha
         }
-
-    output.innerHTML = "Coluna cheia!";
     return null;
 }
 
@@ -487,4 +470,18 @@ function titulo() {
     title.innerHTML = estadoDoJogo.nextPlayer == pecaPlayer1 ?
         "<u>" + pecaPlayer1.playerName + "</u> VS " + pecaPlayer2.playerName :
         pecaPlayer1.playerName + " VS <u>" + pecaPlayer2.playerName + "</u> ";
+}
+
+function stopEverything() {
+    estadoDoJogo.emCurso = false;
+    window.removeEventListener("mousemove", movimentoRato, false);
+    for (var i = 0; i < zonaJogadas.length; i++)
+        zonaJogadas[i].removeEventListener("mouseup", zonaJogavel, false);
+    estadoDoJogo.nextPlayer.peca.className = "escondido";
+}
+
+function helper3EmLInha(cel, linha, coluna) {
+    if (linha == 5)
+        return true;
+    return (cel != 0 || (map[linha + 1][coluna] != 0))
 }
